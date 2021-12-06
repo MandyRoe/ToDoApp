@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ToDoApp">
         <activity
-            android:name=".DashboardActivity"
+            android:name=".authentification.ResetPWActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
@@ -19,7 +19,7 @@
             android:name=".RegisterActivity"
             android:exported="false" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".authentification.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

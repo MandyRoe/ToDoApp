@@ -1,16 +1,24 @@
-package com.example.todoapp
+package com.example.todoapp.authentification
 
+import android.content.DialogInterface
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Patterns
+import android.util.Patterns.EMAIL_ADDRESS
+import android.widget.EditText
 import android.widget.Toast
-import com.google.android.gms.common.SignInButton
+import androidx.appcompat.app.AlertDialog
+import androidx.core.util.PatternsCompat.EMAIL_ADDRESS
+import com.example.todoapp.MainActivity
+import com.example.todoapp.R
+import com.example.todoapp.RegisterActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_login.*
+import java.util.regex.Pattern
 
 class LoginActivity : AppCompatActivity() {
 
@@ -29,9 +37,40 @@ class LoginActivity : AppCompatActivity() {
 
         btn_LoginButton.setOnClickListener{
             doLogin()
+        }
 
+        btn_forgotpw.setOnClickListener {
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("Forgot Password")
+            // Show the Dialog field
+            val view = layoutInflater.inflate(R.layout.screen_forgot_pw, null)
+            val username = view.findViewById<EditText>(R.id.tv_email)
+            builder.setView(view)
+
+            builder.setPositiveButton("Reset", DialogInterface.OnClickListener { _, _ ->
+            forgotPassword(username)
+        })
+            builder.setNegativeButton("Close", DialogInterface.OnClickListener{_, _ -> })
+            builder.show()
         }
     }
+
+    private fun forgotPassword(username: EditText) {
+        if (username.text.toString().isEmpty()) {
+            return
+        }
+        if (!Patterns.EMAIL_ADDRESS.matcher(username.text.toString()).matches()) {
+            return
+        }
+        auth.sendPasswordResetEmail(username.text.toString())
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Toast.makeText(this, "Email sent.", Toast.LENGTH_SHORT).show()
+                }
+            }
+    }
+
+
 
     private fun doLogin() {
         if (tv_email.text.toString().isEmpty()) {
@@ -72,7 +111,7 @@ class LoginActivity : AppCompatActivity() {
         super.onStart()
         // Check if user is signed in (non-null) and update UI accordingly.
         val currentUser = auth.currentUser
-        updateUI(currentUser);
+        updateUI(currentUser)
     }
 
     private fun updateUI(currentUser: FirebaseUser?) {
