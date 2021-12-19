@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_home -> Toast.makeText(applicationContext, "Clicked home", Toast.LENGTH_SHORT).show()
                 R.id.nav_logout -> Toast.makeText(applicationContext, "Clicked logout", Toast.LENGTH_SHORT).show()
                 R.id.nav_share -> Toast.makeText(applicationContext, "Clicked share", Toast.LENGTH_SHORT).show()
-                R.id.nav_test_change_activity -> startActivity(Intent(this,testActivity::class.java))
+                R.id.nav_test_change_activity -> startActivity(Intent(this,TestActivity::class.java))
             }
             true
         }

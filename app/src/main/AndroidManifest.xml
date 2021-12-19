@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ToDoApp">
         <activity
-            android:name=".util.testActivity"
+            android:name=".TestActivity"
             android:exported="false" />
         <activity
             android:name=".authentification.ResetPWActivity"
