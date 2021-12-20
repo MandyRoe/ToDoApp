@@ -39,7 +39,7 @@ class LoginActivity : AppCompatActivity() {
             doLogin()
         }
 
-        btn_forgotpw.setOnClickListener {
+        btn_forgot_pw.setOnClickListener {
             val builder = AlertDialog.Builder(this)
             builder.setTitle("Forgot Password")
             // Show the Dialog field

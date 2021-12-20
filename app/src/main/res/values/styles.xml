@@ -15,13 +15,13 @@
 
     <style name="loginParent" parent="parent">
         <item name="android:layout_height">match_parent</item>
-        <item name="android:background">@color/loginBkColor</item>
+        <item name="android:background">@color/darker_blue</item>
         <item name="android:focusableInTouchMode">true</item>
     </style>
 
     <style name="headerText" parent="parent">
         <item name="android:textAlignment">center</item>
-        <item name="android:textColor">@color/whiteTextColor</item>
+        <item name="android:textColor">@color/white</item>
         <item name="android:textStyle">bold</item>
     </style>
 
@@ -32,11 +32,11 @@
     </style>
 
     <style name="headerTextPrimary" parent="headerText">
-        <item name="android:textColor">@color/primaryTextColor</item>
+        <item name="android:textColor">@color/darker_blue</item>
     </style>
 
     <style name="modifiedEditText" parent="parent">
-        <item name="android:backgroundTint">@color/primaryTextColor</item>
+        <item name="android:backgroundTint">@color/darker_blue</item>
     </style>
 
     <style name="viewParent">

@@ -6,7 +6,7 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="ToDoListApp"
-        android:roundIcon="@mipmap/checklist"
+        android:roundIcon="@drawable/ownlogo"
         android:supportsRtl="true"
         android:theme="@style/Theme.ToDoApp">
         <activity

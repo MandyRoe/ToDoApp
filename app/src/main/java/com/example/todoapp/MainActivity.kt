@@ -9,6 +9,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.todoapp.authentification.LoginActivity
+import com.example.todoapp.authentification.ResetPWActivity
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_test.*
@@ -42,9 +43,17 @@ class MainActivity : AppCompatActivity() {
         nav_view.bringToFront()
         nav_view.setNavigationItemSelectedListener {
             when(it.itemId) {
-                R.id.nav_home -> Toast.makeText(applicationContext, "Clicked home", Toast.LENGTH_SHORT).show()
-                R.id.nav_logout -> Toast.makeText(applicationContext, "Clicked logout", Toast.LENGTH_SHORT).show()
+                R.id.nav_home -> startActivity(Intent(this,TestActivity::class.java))
+
+                R.id.nav_logout -> {
+                    auth.signOut()
+                    Toast.makeText(this, "Logout", Toast.LENGTH_SHORT)
+                        .show()
+                    startActivity(Intent(this, LoginActivity::class.java))
+                }
+
                 R.id.nav_share -> Toast.makeText(applicationContext, "Clicked share", Toast.LENGTH_SHORT).show()
+
                 R.id.nav_test_change_activity -> startActivity(Intent(this,TestActivity::class.java))
             }
             true
@@ -69,12 +78,11 @@ class MainActivity : AppCompatActivity() {
             todoAdapter.deleteDoneTodos()
         }
 
-        btn_logout.setOnClickListener {
-            auth.signOut()
-            Toast.makeText(this, "Logout", Toast.LENGTH_SHORT)
-                .show()
-            startActivity(Intent(this, LoginActivity::class.java))
-        }
+//        btn_logout.setOnClickListener {
+//            auth.signOut()
+//            Toast.makeText(this, "Logout", Toast.LENGTH_SHORT)
+//                .show()
+//            startActivity(Intent(this, LoginActivity::class.java))  }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
