@@ -22,20 +22,14 @@ class MainActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
 
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-
 
         //toggle home button functionality
         toggle= ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close)
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
-
-
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
@@ -43,7 +37,7 @@ class MainActivity : AppCompatActivity() {
         nav_view.bringToFront()
         nav_view.setNavigationItemSelectedListener {
             when(it.itemId) {
-                R.id.nav_home -> startActivity(Intent(this,TestActivity::class.java))
+                R.id.nav_home -> startActivity(Intent(this,DashboardActivity::class.java))
 
                 R.id.nav_logout -> {
                     auth.signOut()
@@ -51,7 +45,6 @@ class MainActivity : AppCompatActivity() {
                         .show()
                     startActivity(Intent(this, LoginActivity::class.java))
                 }
-
                 R.id.nav_share -> Toast.makeText(applicationContext, "Clicked share", Toast.LENGTH_SHORT).show()
 
                 R.id.nav_test_change_activity -> startActivity(Intent(this,TestActivity::class.java))

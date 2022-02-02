@@ -14,12 +14,23 @@
         android:layout_marginStart="80dp"
         android:layout_marginEnd="80dp"
         android:text="@string/to_do"
-        android:backgroundTint="@color/darker_blue"
+        android:backgroundTint="@color/blue"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <Button
+        android:id="@+id/dash_events"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="80dp"
+        android:layout_marginEnd="80dp"
+        android:backgroundTint="@color/darker_blue"
+        android:text="@string/event"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dash_todo" />
 
     <Button
         android:id="@+id/dash_change_pw"
@@ -31,7 +42,7 @@
         android:backgroundTint="@color/first_purple"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dash_todo" />
+        app:layout_constraintTop_toBottomOf="@+id/dash_events" />
 
     <Button
         android:id="@+id/dash_test"
@@ -55,7 +66,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ownlogo"
-        android:contentDescription="ToDo_logo" />
+        android:contentDescription="@string/todo_logo" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

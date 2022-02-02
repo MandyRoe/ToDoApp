@@ -13,5 +13,12 @@
     <string name="forgot_password">Forgot Password</string>
     <string name="dash_logout">Logout</string>
     <string name="dash_change_pw">Change Password</string>
+    <string name="todo_logo">ToDo_logo</string>
+    <string name="event">Calendar</string>
+    <string name="event_title">Event Title</string>
+    <string name="location">Location</string>
+    <string name="description">Description</string>
+    <string name="add_event">Add Event</string>
+
 
 </resources>
