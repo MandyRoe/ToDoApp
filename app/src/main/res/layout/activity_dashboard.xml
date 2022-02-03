@@ -45,7 +45,7 @@
         app:layout_constraintTop_toBottomOf="@+id/dash_events" />
 
     <Button
-        android:id="@+id/dash_test"
+        android:id="@+id/dash_logout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="80dp"

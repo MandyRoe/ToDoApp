@@ -23,7 +23,7 @@ class TestActivity : AppCompatActivity() {
             ).show()
         }
 
-        val backButton = findViewById<Button>(R.id.btn_test)
+        val backButton = findViewById<Button>(R.id.btn_back)
         backButton.setOnClickListener{
             val Intent = Intent(this,MainActivity::class.java)
             startActivity(Intent)

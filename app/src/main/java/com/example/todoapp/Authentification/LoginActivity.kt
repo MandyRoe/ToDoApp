@@ -10,6 +10,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.util.PatternsCompat.EMAIL_ADDRESS
+import com.example.todoapp.DashboardActivity
 import com.example.todoapp.MainActivity
 import com.example.todoapp.R
 import com.example.todoapp.RegisterActivity
@@ -119,7 +120,7 @@ class LoginActivity : AppCompatActivity() {
         if(currentUser != null) {
             // check if the user has verified his email address
             if(currentUser.isEmailVerified){
-                startActivity(Intent(this, MainActivity::class.java))
+                startActivity(Intent(this, DashboardActivity::class.java))
             finish()
             }else{
             Toast.makeText(

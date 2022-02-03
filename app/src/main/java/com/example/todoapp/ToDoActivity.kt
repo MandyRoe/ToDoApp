@@ -1,33 +1,78 @@
 package com.example.todoapp
 
+
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.MenuItem
+import android.widget.Button
+import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.core.view.GravityCompat
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.appcompat.app.AppCompatActivity
+import com.example.todoapp.R
+import com.example.todoapp.ToDo
 import com.example.todoapp.authentification.LoginActivity
-import com.example.todoapp.authentification.ResetPWActivity
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_test.*
 
-class MainActivity : AppCompatActivity() {
 
-    lateinit var toggle: ActionBarDrawerToggle
+class ToDoActivity : AppCompatActivity() {
 
-    // lateinit means "we are doing that later
-    private lateinit var todoAdapter: ToDoAdapter
-    private lateinit var auth: FirebaseAuth
+    private lateinit var auth : FirebaseAuth
+    private lateinit var databaseReference: DatabaseReference
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+
+        setContentView(R.layout.activity_todo)
+        auth = FirebaseAuth.getInstance()
+        val uid = auth.currentUser?.uid
+        databaseReference =
+                FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app")
+                    .getReference("ToDo")
+
+
+
+        val saveButton = findViewById<Button>(R.id.btnAddToDo)
+        saveButton.setOnClickListener {
+            println("button press successfull")
+
+            val toDoTitle = findViewById<EditText>(R.id.etToDoTitle)
+
+
+            val toDoTitleString = toDoTitle.text.toString()
+            println(toDoTitleString)
+
+
+
+
+            val todo = ToDo(toDoTitleString, uid)
+            if(uid != null){
+                println(uid)
+
+                databaseReference.child(toDoTitleString + uid).setValue(todo).addOnCompleteListener {
+
+                    if (it.isSuccessful){
+                        println("enter db successfull")
+
+                    }else{
+                        println("enter db not successfull")
+
+                        Toast.makeText(this@ToDoActivity, "Failed to send toDo", Toast.LENGTH_SHORT).show()
+                    }
+
+                }
+            }
+
+
+        }
+
 
         //toggle home button functionality
+        lateinit var toggle: ActionBarDrawerToggle
+
         toggle = ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close)
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
@@ -68,38 +113,10 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-        todoAdapter = ToDoAdapter(mutableListOf())
-        rvToDoItems.adapter = todoAdapter
-        rvToDoItems.layoutManager = LinearLayoutManager(this)
 
-        //add the click listeners to listen if the button gets clicked
-        btnAddToDo.setOnClickListener {
-            val todoTitle = etToDoTitle.text.toString()
-            if (todoTitle.isNotEmpty()) {
-                val todo = ToDo(todoTitle)
-                todoAdapter.addToDoDo(todo)
-                // clear the field after the item was added
-                etToDoTitle.text.clear()
-            }
-        }
-        btnDeleteDone.setOnClickListener {
-            todoAdapter.deleteDoneTodos()
-        }
 
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (toggle.onOptionsItemSelected(item)) {
-            return true
-        }
-        return super.onOptionsItemSelected(item)
-    }
 
-    //don't close app if drawer is open and back is pressed
-    override fun onBackPressed() {
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START)
-        }
-        return super.onBackPressed()
-    }
+
 }
