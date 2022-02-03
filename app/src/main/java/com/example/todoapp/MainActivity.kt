@@ -18,8 +18,7 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var toggle: ActionBarDrawerToggle
 
-    // lateinit means "we are doing that later
-    private lateinit var todoAdapter: ToDoAdapter
+    // lateinit means "we are doing that later"
     private lateinit var auth: FirebaseAuth
 
 
@@ -67,6 +66,7 @@ class MainActivity : AppCompatActivity() {
             true
         }
 
+       /* //toDo List
 
         todoAdapter = ToDoAdapter(mutableListOf())
         rvToDoItems.adapter = todoAdapter
@@ -85,7 +85,7 @@ class MainActivity : AppCompatActivity() {
         btnDeleteDone.setOnClickListener {
             todoAdapter.deleteDoneTodos()
         }
-
+        //toDo List end*/
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

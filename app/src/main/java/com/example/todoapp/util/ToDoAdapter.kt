@@ -10,64 +10,47 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.item_todo.view.*
 
-// contains the main logic of the app
-class ToDoAdapter(
-    private val todos: MutableList<ToDo>
-) : RecyclerView.Adapter<ToDoAdapter.ToDoViewHolder>() {
 
-    class ToDoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+class ToDoAdapter(private val todoList : ArrayList<ToDo>) : RecyclerView.Adapter<ToDoAdapter.todoViewHolder>() {
 
-    // information from where the layout comes from - which xml should be "inflate"
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ToDoViewHolder {
-        return ToDoViewHolder(
-            LayoutInflater.from(parent.context).inflate(
-                R.layout.item_todo,
-                parent,
-                false
-            )
-        )
+
+
+
+
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): todoViewHolder {
+
+        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_todo, parent, false)
+        return todoViewHolder(itemView)
     }
 
-    // add the new to do at the end of the list
-    fun addToDoDo(todo: ToDo) {
-        todos.add(todo)
-        notifyItemInserted(todos.size - 1)
+
+    override fun onBindViewHolder(holder: todoViewHolder, position: Int) {
+
+        val currentitem = todoList[position]
+
+        holder.title.text = currentitem.title
+        //fetched info
     }
 
-    // checks with the help of boolean if the item is done
-    fun deleteDoneTodos() {
-        todos.removeAll { todo ->
-            todo.isCheck
-        }
-        notifyDataSetChanged()
-    }
 
-    // checked or unchecked items. based on binary (paintFlags)
-    private fun toggleStrikeThrough(tvToDoTitle: TextView, isChecked: Boolean) {
-        if(isChecked) {
-            tvToDoTitle.paintFlags = tvToDoTitle.paintFlags or STRIKE_THRU_TEXT_FLAG
-        } else {
-            tvToDoTitle.paintFlags = tvToDoTitle.paintFlags and STRIKE_THRU_TEXT_FLAG.inv()
-        }
-    }
 
-    // bind the data from the to do list to the view of the list
-    // set the new input to do into the check box
-    override fun onBindViewHolder(holder: ToDoViewHolder, position: Int) {
-        val curToDo = todos[position]
-        holder.itemView.apply {
-            tvToDoTitle.text = curToDo.title
-            cbDone.isChecked = curToDo.isCheck
-            toggleStrikeThrough(tvToDoTitle, curToDo.isCheck)
-            cbDone.setOnCheckedChangeListener { _, isChecked ->
-                toggleStrikeThrough(tvToDoTitle, isChecked)
-                curToDo.isCheck = !curToDo.isCheck
-            }
-        }
-    }
-
-    // returns the amount of items in the list
     override fun getItemCount(): Int {
-        return todos.size
+
+        return todoList.size
     }
+
+
+
+
+
+    class todoViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
+
+        val title : TextView = itemView.findViewById(R.id.tvToDoTitle)
+        //fetched info
+
+    }
+
+
+
 }

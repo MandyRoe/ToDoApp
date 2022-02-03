@@ -4,5 +4,5 @@ package com.example.todoapp
 data class ToDo(
     val title: String ?= null,
     val uid: String ?= null,
-    var isCheck: Boolean = false
+    var check: Boolean = false
 )
