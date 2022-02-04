@@ -26,63 +26,31 @@ class ToDoActivity : AppCompatActivity() {
     private lateinit var databaseReference: DatabaseReference
     private lateinit var todoRecyclerView: RecyclerView
     private lateinit var todoArrayList: ArrayList<ToDo>
+    private lateinit var toggle: ActionBarDrawerToggle
 
-    lateinit var toggle: ActionBarDrawerToggle
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_todo)
-
-
         auth = FirebaseAuth.getInstance()
         val uid = auth.currentUser?.uid
-        databaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app").getReference("ToDo")
 
+        databaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app").getReference("ToDo")
         todoRecyclerView = findViewById(R.id.rvToDoItems)
         todoRecyclerView.layoutManager = LinearLayoutManager(this)
         todoRecyclerView.setHasFixedSize(true)
 
         todoArrayList = arrayListOf<ToDo>()
-        getTodoData()
+
+        getTodoData(uid!!)
 
 
         val btnAddToDo= findViewById<Button>(R.id.btnAddToDo)
         btnAddToDo.setOnClickListener {
             println("button press successfull")
 
-            val todoTitle = etToDoTitle.text.toString()
-            if (todoTitle.isNotEmpty()) {
-                val todo = ToDo(todoTitle)
-
-
-            }
-
-            //val toDoTitle = findViewById<EditText>(R.id.etToDoTitle)
-            //val toDoTitleString = toDoTitle.text.toString()
-            //println(toDoTitleString)
-            val todo = ToDo(todoTitle, uid)
-
-            if(uid != null){
-                println(uid)
-
-                databaseReference.child(todoTitle + uid).setValue(todo).addOnCompleteListener {
-
-                    if (it.isSuccessful){
-                        println("enter db successfull")
-
-                        getTodoData()
-                        todoArrayList.clear()
-                        etToDoTitle.text.clear()
-
-                    }else{
-                        println("enter db not successfull")
-                        Toast.makeText(this@ToDoActivity, "Failed to send toDo", Toast.LENGTH_SHORT).show()
-                        etToDoTitle.text.clear()
-                    }
-
-                }
-            }
-
+            addTodoData()
+            etToDoTitle.text.clear()
 
         }
 
@@ -130,34 +98,59 @@ class ToDoActivity : AppCompatActivity() {
 
     } //onCreate end
 
-    private fun getTodoData() {
+     //functions
+
+    private fun addTodoData() {
+        auth = FirebaseAuth.getInstance()
+        val uid = auth.currentUser?.uid
+        val todoTitle = etToDoTitle.text.toString()
+        val todo = ToDo(todoTitle, uid)
+
+        databaseReference.child(todoTitle + uid).setValue(todo).addOnCompleteListener {
+
+            getTodoData(uid!!)
+            todoArrayList.clear()
+
+        }
+    }
+
+
+    private fun getTodoData(uid: String) {
 
         databaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app").getReference("ToDo")
-
         databaseReference.addValueEventListener(object: ValueEventListener {
 
             override fun onDataChange(snapshot: DataSnapshot) {
 
+
                 if (snapshot.exists()) {
                     for (todoSnapshot in snapshot.children) {
 
-                        val todo = todoSnapshot.getValue(ToDo::class.java)
-                        todoArrayList.add(todo!!)                              //arrayList with all the objects in Database
+                        if (todoSnapshot.key!!.contains(uid)) {             //nur vom jeweiligen nutzer sollen todos angezeigt werden
+                            println("entered if")
+                            val todo = todoSnapshot.getValue(ToDo::class.java)
+
+
+                            todoArrayList.add(todo!!)                              //arrayList with all the todoitems in Database
+                            todoRecyclerView.adapter = ToDoAdapter(todoArrayList)
+
+                        } else println("uid doesnt match")
+
+
                     }
-
-                    todoRecyclerView.adapter = ToDoAdapter(todoArrayList)
-
                 }
 
             }
 
             override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
+
             }
 
         })
+        println("get todo ausgeführt")
 
     }
+
 
 
 
