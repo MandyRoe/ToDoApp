@@ -1,6 +1,4 @@
 package com.example.todoapp
-
-
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
@@ -42,15 +40,27 @@ class ToDoActivity : AppCompatActivity() {
 
         todoArrayList = arrayListOf<ToDo>()
 
-        getTodoData(uid!!)
+        showTodoData(uid!!)
 
 
         val btnAddToDo= findViewById<Button>(R.id.btnAddToDo)
         btnAddToDo.setOnClickListener {
-            println("button press successfull")
+            println("add pressed successfully")
 
             addTodoData()
             etToDoTitle.text.clear()
+
+        }
+
+
+        val btnDeleteDone= findViewById<Button>(R.id.btnDeleteDone)
+        btnDeleteDone.setOnClickListener {
+            println("delete pressed successfully")
+            deleteTodoData()
+
+
+
+
 
         }
 
@@ -108,44 +118,76 @@ class ToDoActivity : AppCompatActivity() {
 
         databaseReference.child(todoTitle + uid).setValue(todo).addOnCompleteListener {
 
-            getTodoData(uid!!)
+            showTodoData(uid!!)
             todoArrayList.clear()
 
         }
     }
 
-
-    private fun getTodoData(uid: String) {
-
+    private fun deleteTodoData() {
+        auth = FirebaseAuth.getInstance()
+        val uid = auth.currentUser?.uid
         databaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app").getReference("ToDo")
-        databaseReference.addValueEventListener(object: ValueEventListener {
+        databaseReference.addListenerForSingleValueEvent(object: ValueEventListener {   //addValueEventListener loops infinite
 
             override fun onDataChange(snapshot: DataSnapshot) {
 
+                for(ds in snapshot.getChildren()) {
+                   var checkStatus : Boolean = ds.child("check").getValue() as Boolean
 
-                if (snapshot.exists()) {
-                    for (todoSnapshot in snapshot.children) {
+                    println(checkStatus)
 
-                        if (todoSnapshot.key!!.contains(uid)) {             //nur vom jeweiligen nutzer sollen todos angezeigt werden
-                            println("entered if")
-                            val todo = todoSnapshot.getValue(ToDo::class.java)
-
-
-                            todoArrayList.add(todo!!)                              //arrayList with all the todoitems in Database
-                            todoRecyclerView.adapter = ToDoAdapter(todoArrayList)
-
-                        } else println("uid doesnt match")
-
-
+                    if (checkStatus == true){
+                        val checkTitle : String = ds.child("title").getValue().toString()
+                        databaseReference.child(checkTitle + uid).removeValue()
+                        println(todoArrayList)
+                        println(checkTitle)
+                        var i: Int = todoArrayList.indexOfFirst { it.title==checkTitle }
+                        println(i)
+                        todoArrayList.removeAt(i)
+                        todoRecyclerView.adapter = ToDoAdapter(todoArrayList)
                     }
+
+
                 }
+
 
             }
 
             override fun onCancelled(error: DatabaseError) {
+            }
+        })
+        println("delete todo ausgeführt")
+    }
 
+
+
+
+    private fun showTodoData(uid: String) {
+
+        databaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app").getReference("ToDo")
+        databaseReference.addListenerForSingleValueEvent(object: ValueEventListener {   //addValueEventListener loops infinite
+
+            override fun onDataChange(snapshot: DataSnapshot) {
+
+
+
+                    for (todoSnapshot in snapshot.children) {
+
+                        if (todoSnapshot.key!!.contains(uid)) {             //only show user owned items
+                            val todo = todoSnapshot.getValue(ToDo::class.java)
+
+
+                            todoArrayList.add(todo!!)                              //arrayList with all the user owned todos in Database
+                            todoRecyclerView.adapter = ToDoAdapter(todoArrayList)
+
+                        }
+
+                    }
             }
 
+            override fun onCancelled(error: DatabaseError) {
+            }
         })
         println("get todo ausgeführt")
 
@@ -176,7 +218,6 @@ class ToDoActivity : AppCompatActivity() {
 
 
 }
-
 
 
 
