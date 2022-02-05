@@ -11,6 +11,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 import android.net.Uri
 import android.widget.EditText
+import android.widget.TextView
 import androidx.core.view.isVisible
 import com.google.firebase.database.*
 import com.google.firebase.storage.StorageReference
@@ -33,6 +34,8 @@ class ProfileActivity : AppCompatActivity() {
         databaseReference =
             FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app")
                 .getReference("Users")
+
+        showProfile(uid!!)
 
 
 
@@ -117,6 +120,42 @@ class ProfileActivity : AppCompatActivity() {
         })
 
     }
+    //load existing text for user from db
+    private fun showProfile(uid : String) {
+        databaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Users")
+        databaseReference.addListenerForSingleValueEvent(object: ValueEventListener {
+
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for (ds in snapshot.children) {
+
+                    if(ds.key!!.contains(uid)){
+                        var fn = ds.child("firstName").getValue().toString()
+                        var ln = ds.child("lastName").getValue().toString()
+                        var b = ds.child("bio").getValue().toString()
+
+
+                        val firstName = findViewById<EditText>(R.id.etFirstName)
+                        firstName.setText(fn, TextView.BufferType.EDITABLE)
+
+                        val lastName = findViewById<EditText>(R.id.etLastName)
+                        lastName.setText(ln, TextView.BufferType.EDITABLE)
+
+                        val bio = findViewById<EditText>(R.id.etBio)
+                        bio.setText(b, TextView.BufferType.EDITABLE)
+
+                    }
+
+                }
+            }
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+
+        })
+
+    }
+
     //home button shown?
     private fun toBeOrNotToBe(button: Button) {
         databaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Users")

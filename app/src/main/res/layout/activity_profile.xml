@@ -9,25 +9,13 @@
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profile_image"
-        android:layout_width="108dp"
-        android:layout_height="132dp"
-        android:layout_marginTop="64dp"
+        android:layout_width="122dp"
+        android:layout_height="142dp"
+        android:layout_marginTop="44dp"
         android:src="@drawable/profile"
         app:civ_border_color="#FF000000"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/tvProfileAnnouncement"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:text="Please enter your profile information"
-        android:textColor="@color/colorAccent"
-        android:textSize="21dp"
-        app:layout_constraintBottom_toTopOf="@+id/profile_image"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -118,8 +106,10 @@
         android:text="Home"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/btnCreateProfile" />
+        app:layout_constraintTop_toTopOf="@id/btnCreateProfile"
+        app:layout_constraintVertical_bias="0.311" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

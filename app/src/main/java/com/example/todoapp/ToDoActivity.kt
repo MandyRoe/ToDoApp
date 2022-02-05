@@ -138,12 +138,11 @@ class ToDoActivity : AppCompatActivity() {
                     println(checkStatus)
 
                     if (checkStatus == true){
+
                         val checkTitle : String = ds.child("title").getValue().toString()
                         databaseReference.child(checkTitle + uid).removeValue()
-                        println(todoArrayList)
-                        println(checkTitle)
+
                         var i: Int = todoArrayList.indexOfFirst { it.title==checkTitle }
-                        println(i)
                         todoArrayList.removeAt(i)
                         todoRecyclerView.adapter = ToDoAdapter(todoArrayList)
                     }
