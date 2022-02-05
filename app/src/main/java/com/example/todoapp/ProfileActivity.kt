@@ -8,11 +8,11 @@ import android.widget.Button
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_test.*
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import android.net.Uri
 import android.widget.EditText
+import androidx.core.view.isVisible
+import com.google.firebase.database.*
 import com.google.firebase.storage.StorageReference
 
 
@@ -36,32 +36,30 @@ class ProfileActivity : AppCompatActivity() {
 
 
 
-        val saveButton = findViewById<Button>(R.id.btnSave)
-        saveButton.setOnClickListener {
-            println("2")
+
+        val createProfileButton = findViewById<Button>(R.id.btnCreateProfile)
+        createOrEdit(createProfileButton)
+        createProfileButton.setOnClickListener {
 
             val firstName = findViewById<EditText>(R.id.etFirstName)
             val lastName = findViewById<EditText>(R.id.etLastName)
             val bio = findViewById<EditText>(R.id.etBio)
 
             val firstNameText = firstName.text.toString()
-            println(firstNameText)
             val lastNameText = lastName.text.toString()
             val bioText = bio.text.toString()
 
 
             val user = User(firstNameText, lastNameText, bioText)
             if(uid != null){
-                println(uid)
                 databaseReference.child(uid).setValue(user).addOnCompleteListener {
 
                     if (it.isSuccessful){
-                        println("1")
                         uploadProfilePic()
-
+                        Toast.makeText(this@ProfileActivity, "Profile edit successful", Toast.LENGTH_SHORT).show()
+                        sendToDashboard()
 
                     }else{
-                    println("notSuccessfull")
 
                         Toast.makeText(this@ProfileActivity, "Failed to update profile", Toast.LENGTH_SHORT).show()
                     }
@@ -72,6 +70,7 @@ class ProfileActivity : AppCompatActivity() {
 
         }
         val homeButton = findViewById<Button>(R.id.homeBtn)
+        toBeOrNotToBe(homeButton)
         homeButton.setOnClickListener{
             val intent = Intent(this,DashboardActivity::class.java)
             startActivity(intent)
@@ -81,18 +80,79 @@ class ProfileActivity : AppCompatActivity() {
 
 
     }
+    //checks if Profile information is submitted to create profile
+    private fun checkIfDataEntered(){
+
+
+    }
+
+    private fun sendToDashboard(){
+        startActivity(Intent(this, DashboardActivity::class.java))
+    }
+
+    //check if profile exists for create or change button
+    private fun createOrEdit(button: Button) {
+        databaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Users")
+        databaseReference.addListenerForSingleValueEvent(object: ValueEventListener {
+
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for (ds in snapshot.getChildren()) {
+                    var checkReg = ds.child("reg_flag").getValue()
+
+                    if(checkReg ==true){
+
+
+                    } else if(checkReg == null){
+                        button?.text = "Edit Profile"
+                        println("reg_flag doesn't exist so user is registered")
+                    }
+
+                }
+            }
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+
+        })
+
+    }
+    //home button shown?
+    private fun toBeOrNotToBe(button: Button) {
+        databaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Users")
+        databaseReference.addListenerForSingleValueEvent(object: ValueEventListener {
+
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for (ds in snapshot.getChildren()) {
+                    var checkReg = ds.child("reg_flag").getValue()
+
+                    if(checkReg ==true){
+                        button.isEnabled = false
+                        button.isVisible = false
+
+
+                    } else if(checkReg == null){
+
+                    }
+
+                }
+            }
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+
+        })
+
+    }
+
     private fun uploadProfilePic() {
 
         imageUri = Uri.parse("android.resource://$packageName/${R.drawable.profile}")
         storageReference = FirebaseStorage.getInstance("gs://todoapp-ca2d3.appspot.com").getReference("Users/"+auth.currentUser?.uid)
-        storageReference.putFile(imageUri).addOnSuccessListener {
+        storageReference.putFile(imageUri)
 
-            Toast.makeText(this@ProfileActivity, "Profile successfully updated", Toast.LENGTH_SHORT).show()
-
-        }.addOnFailureListener{
-            Toast.makeText(this@ProfileActivity, "Failed to upload the image", Toast.LENGTH_SHORT).show()
-
-        }
+        println("picture uplaoded")
 
 
     }

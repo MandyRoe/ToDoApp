@@ -33,6 +33,18 @@
         app:layout_constraintTop_toBottomOf="@+id/dash_todo" />
 
     <Button
+        android:id="@+id/dash_profile"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="80dp"
+        android:layout_marginEnd="80dp"
+        android:backgroundTint="@color/darker_blue"
+        android:text="@string/add_profile"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dash_events" />
+
+    <Button
         android:id="@+id/dash_change_pw"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -42,7 +54,7 @@
         android:backgroundTint="@color/first_purple"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dash_events" />
+        app:layout_constraintTop_toBottomOf="@+id/dash_profile" />
 
     <Button
         android:id="@+id/dash_logout"

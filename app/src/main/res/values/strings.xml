@@ -19,6 +19,7 @@
     <string name="location">Location</string>
     <string name="description">Description</string>
     <string name="add_event">Add Event</string>
+    <string name="add_profile">Profile</string>
 
 
 </resources>
