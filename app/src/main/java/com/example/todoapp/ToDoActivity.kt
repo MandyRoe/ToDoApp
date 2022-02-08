@@ -3,19 +3,19 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Button
-import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.todoapp.R
-import com.example.todoapp.ToDo
 import com.example.todoapp.authentification.LoginActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_main.drawerLayout
+import kotlinx.android.synthetic.main.activity_main.nav_view
+import kotlinx.android.synthetic.main.activity_todo.*
 
 
 class ToDoActivity : AppCompatActivity() {
@@ -24,6 +24,7 @@ class ToDoActivity : AppCompatActivity() {
     private lateinit var databaseReference: DatabaseReference
     private lateinit var todoRecyclerView: RecyclerView
     private lateinit var todoArrayList: ArrayList<ToDo>
+    lateinit var selectedTodoArrayList: ArrayList<ToDo>
     private lateinit var toggle: ActionBarDrawerToggle
 
 
@@ -39,8 +40,10 @@ class ToDoActivity : AppCompatActivity() {
         todoRecyclerView.setHasFixedSize(true)
 
         todoArrayList = arrayListOf<ToDo>()
+        selectedTodoArrayList = arrayListOf<ToDo>()
 
-        showTodoData(uid!!)
+
+        readTodoData(uid!!)
 
 
         val btnAddToDo= findViewById<Button>(R.id.btnAddToDo)
@@ -48,22 +51,9 @@ class ToDoActivity : AppCompatActivity() {
             println("add pressed successfully")
 
             addTodoData()
-            etToDoTitle.text.clear()
+            etTodoTitle.text.clear()
 
         }
-
-
-        val btnDeleteDone= findViewById<Button>(R.id.btnDeleteDone)
-        btnDeleteDone.setOnClickListener {
-            println("delete pressed successfully")
-            deleteTodoData()
-
-
-
-
-
-        }
-
 
 
         //toggle home button functionality
@@ -88,11 +78,9 @@ class ToDoActivity : AppCompatActivity() {
                 }
                 R.id.nav_profile -> startActivity(Intent(this, ProfileActivity::class.java))
 
-                R.id.nav_share -> Toast.makeText(
-                    applicationContext,
-                    "Clicked share",
-                    Toast.LENGTH_SHORT
-                ).show()
+                R.id.nav_friends -> startActivity(Intent(this, SelectUsersActivity::class.java))
+
+                R.id.nav_friends -> Toast.makeText(applicationContext, "Clicked friends", Toast.LENGTH_SHORT).show()
 
                 R.id.nav_test_change_activity -> startActivity(
                     Intent(
@@ -113,70 +101,29 @@ class ToDoActivity : AppCompatActivity() {
     private fun addTodoData() {
         auth = FirebaseAuth.getInstance()
         val uid = auth.currentUser?.uid
-        val todoTitle = etToDoTitle.text.toString()
-        val todo = ToDo(todoTitle, uid)
+        val todoTitle = etTodoTitle.text.toString()
+        val description = "placeholder"
+        val todo = ToDo(todoTitle, description, uid)
 
         databaseReference.child(todoTitle + uid).setValue(todo).addOnCompleteListener {
 
-            showTodoData(uid!!)
-            todoArrayList.clear()
+            readTodoData(uid!!)
+            todoArrayList.clear()   //if two items added array would still be full
 
         }
     }
 
-    private fun deleteTodoData() {
-        auth = FirebaseAuth.getInstance()
-        val uid = auth.currentUser?.uid
-        databaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app").getReference("ToDo")
-        databaseReference.addListenerForSingleValueEvent(object: ValueEventListener {   //addValueEventListener loops infinite
-
-            override fun onDataChange(snapshot: DataSnapshot) {
-
-                for(ds in snapshot.getChildren()) {
-                   var checkStatus : Boolean = ds.child("check").getValue() as Boolean
-
-                    println(checkStatus)
-
-                    if (checkStatus == true){
-
-                        val checkTitle : String = ds.child("title").getValue().toString()
-                        databaseReference.child(checkTitle + uid).removeValue()
-
-                        var i: Int = todoArrayList.indexOfFirst { it.title==checkTitle }
-                        todoArrayList.removeAt(i)
-                        todoRecyclerView.adapter = ToDoAdapter(todoArrayList)
-                    }
-
-
-                }
-
-
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-            }
-        })
-        println("delete todo ausgeführt")
-    }
-
-
-
-
-    private fun showTodoData(uid: String) {
+    private fun readTodoData(uid: String) {
 
         databaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app").getReference("ToDo")
         databaseReference.addListenerForSingleValueEvent(object: ValueEventListener {   //addValueEventListener loops infinite
 
             override fun onDataChange(snapshot: DataSnapshot) {
-
-
 
                     for (todoSnapshot in snapshot.children) {
 
-                        if (todoSnapshot.key!!.contains(uid)) {             //only show user owned items
+                        if (todoSnapshot.key!!.contains(uid)) {                       //only show user owned items
                             val todo = todoSnapshot.getValue(ToDo::class.java)
-
-
                             todoArrayList.add(todo!!)                              //arrayList with all the user owned todos in Database
                             todoRecyclerView.adapter = ToDoAdapter(todoArrayList)
 
@@ -188,7 +135,7 @@ class ToDoActivity : AppCompatActivity() {
             override fun onCancelled(error: DatabaseError) {
             }
         })
-        println("get todo ausgeführt")
+        println("read todo ausgeführt")
 
     }
 

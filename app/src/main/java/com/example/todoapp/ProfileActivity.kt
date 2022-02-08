@@ -31,11 +31,10 @@ class ProfileActivity : AppCompatActivity() {
         setContentView(R.layout.activity_profile)
         auth = FirebaseAuth.getInstance()
         val uid = auth.currentUser?.uid
-        databaseReference =
-            FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app")
-                .getReference("Users")
+        databaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app").getReference("Users")
 
         showProfile(uid!!)
+
 
 
 
@@ -53,14 +52,14 @@ class ProfileActivity : AppCompatActivity() {
             val bioText = bio.text.toString()
 
 
-            val user = User(firstNameText, lastNameText, bioText)
+            val user = User(uid, firstNameText, lastNameText, bioText)
             if(uid != null){
                 databaseReference.child(uid).setValue(user).addOnCompleteListener {
 
                     if (it.isSuccessful){
                         uploadProfilePic()
                         Toast.makeText(this@ProfileActivity, "Profile edit successful", Toast.LENGTH_SHORT).show()
-                        sendToDashboard()
+                        refreshView()
 
                     }else{
 
@@ -84,33 +83,33 @@ class ProfileActivity : AppCompatActivity() {
 
     }
     //checks if Profile information is submitted to create profile
-    private fun checkIfDataEntered(){
 
-
-    }
-
-    private fun sendToDashboard(){
-        startActivity(Intent(this, DashboardActivity::class.java))
+    private fun refreshView(){
+        startActivity(Intent(this, ProfileActivity::class.java))
     }
 
     //check if profile exists for create or change button
     private fun createOrEdit(button: Button) {
+        auth = FirebaseAuth.getInstance()
+        val uid = auth.currentUser?.uid
+
         databaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Users")
         databaseReference.addListenerForSingleValueEvent(object: ValueEventListener {
 
-            override fun onDataChange(snapshot: DataSnapshot) {
+            override fun onDataChange(snapshot: DataSnapshot) {                      //todo registered check auf array umstellen
                 for (ds in snapshot.getChildren()) {
-                    var checkReg = ds.child("reg_flag").getValue()
-
-                    if(checkReg ==true){
-
-
-                    } else if(checkReg == null){
-                        button?.text = "Edit Profile"
-                        println("reg_flag doesn't exist so user is registered")
+                    if (ds.key == uid!!) {
+                        var checkReg = ds.child("reg_flag").getValue()
+                        if(checkReg !=true){
+                            button?.text = "Edit Profile"
+                            println("reg_flag doesn't exist so user is registered")
+                        }
+                        break
                     }
-
                 }
+
+
+
             }
             override fun onCancelled(error: DatabaseError) {
                 TODO("Not yet implemented")
@@ -128,10 +127,19 @@ class ProfileActivity : AppCompatActivity() {
             override fun onDataChange(snapshot: DataSnapshot) {
                 for (ds in snapshot.children) {
 
+
                     if(ds.key!!.contains(uid)){
                         var fn = ds.child("firstName").getValue().toString()
                         var ln = ds.child("lastName").getValue().toString()
                         var b = ds.child("bio").getValue().toString()
+
+                        if(fn == "null" && ln == "null"){
+
+                            fn = ""
+                            ln = ""
+                            b = ""
+
+                        }
 
 
                         val firstName = findViewById<EditText>(R.id.etFirstName)
@@ -195,8 +203,6 @@ class ProfileActivity : AppCompatActivity() {
 
 
     }
-
-
 
 
 }

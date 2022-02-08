@@ -30,6 +30,9 @@
         <activity
             android:name=".ToDoActivity"
             android:exported="false" />
+        <activity
+            android:name=".SelectUsersActivity"
+            android:exported="false" />
 
 
         <activity
