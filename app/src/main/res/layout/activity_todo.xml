@@ -41,34 +41,30 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0" />
 
+
         <EditText
-            android:id="@+id/etToDoTitle"
-            android:layout_width="150dp"
+            android:id="@+id/etTodoTitle"
+            android:layout_width="285dp"
             android:layout_height="wrap_content"
-            android:inputType="text"
             android:hint="Enter ToDo"
+            android:inputType="text"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btnAddToDo"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent" />
 
         <Button
             android:id="@+id/btnAddToDo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Add ToDo"
-            android:backgroundTint="@color/darker_blue"
+            android:layout_width="98dp"
+            android:layout_height="97dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/add_icon"
+            android:backgroundTint="@color/colorAccent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btnDeleteDone" />
-
-        <Button
-            android:id="@+id/btnDeleteDone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Delete ToDo's"
-            android:backgroundTint="@color/sec_purple"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-
-
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintWidth_percent="0.2" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

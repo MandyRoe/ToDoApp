@@ -10,10 +10,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.util.PatternsCompat.EMAIL_ADDRESS
-import com.example.todoapp.DashboardActivity
-import com.example.todoapp.MainActivity
-import com.example.todoapp.R
-import com.example.todoapp.RegisterActivity
+import com.example.todoapp.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
@@ -38,6 +35,7 @@ class LoginActivity : AppCompatActivity() {
 
         btn_LoginButton.setOnClickListener{
             doLogin()
+
         }
 
         btn_forgot_pw.setOnClickListener {

@@ -10,9 +10,11 @@ import com.example.todoapp.authentification.ResetPWActivity
 import kotlinx.android.synthetic.main.activity_dashboard.*
 import java.util.*
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.*
 
 class DashboardActivity : AppCompatActivity() {
 
+    private lateinit var databaseReference: DatabaseReference
     private lateinit var auth: FirebaseAuth
 
 
@@ -20,7 +22,7 @@ class DashboardActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dashboard)
 
-
+        checkReg()
 
         dash_todo.setOnClickListener {
            startActivity(Intent(this, ToDoActivity::class.java))
@@ -28,6 +30,10 @@ class DashboardActivity : AppCompatActivity() {
 
         dash_events.setOnClickListener {
             startActivity(Intent(this, CalendarActivity::class.java))
+        }
+
+        dash_profile.setOnClickListener{
+            startActivity(Intent(this, ProfileActivity::class.java))
         }
 
         dash_change_pw.setOnClickListener {
@@ -46,5 +52,39 @@ class DashboardActivity : AppCompatActivity() {
             startActivity(Intent(this, LoginActivity::class.java))
         }
     }
+
+    //checks regflag for forcing profile creation
+    private fun checkReg() {
+        databaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Users")
+        auth = FirebaseAuth.getInstance()
+        val uid = auth.currentUser?.uid
+        databaseReference.addListenerForSingleValueEvent(object: ValueEventListener {
+
+
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for (ds in snapshot.getChildren()) {
+                    var checkReg = ds.child("reg_flag").getValue()
+
+                    if(checkReg ==true){
+                        sendToProfile()
+
+                    } else if(checkReg == null){
+                        println("reg_flag doesnt exist so user is registered")
+                    }
+
+                }
+            }
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+
+        })
+
+    }
+    private fun sendToProfile(){
+        startActivity(Intent(this, ProfileActivity::class.java))
+    }
+
 }
 
