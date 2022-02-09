@@ -3,12 +3,10 @@ package com.example.todoapp
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
 import android.widget.Toast
 import com.example.todoapp.authentification.LoginActivity
 import com.example.todoapp.authentification.ResetPWActivity
 import kotlinx.android.synthetic.main.activity_dashboard.*
-import java.util.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 
@@ -40,9 +38,6 @@ class DashboardActivity : AppCompatActivity() {
             startActivity(Intent(this, ResetPWActivity::class.java))
         }
 
-        dash_change_pw.setOnClickListener {
-            startActivity(Intent(this, TestActivity::class.java))
-        }
 
         dash_logout.setOnClickListener {
             auth = FirebaseAuth.getInstance()
@@ -53,11 +48,9 @@ class DashboardActivity : AppCompatActivity() {
         }
     }
 
-    //checks regflag for forcing profile creation
+    //checks regflag to force profile creation after registration
     private fun checkReg() {
         databaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Users")
-        auth = FirebaseAuth.getInstance()
-        val uid = auth.currentUser?.uid
         databaseReference.addListenerForSingleValueEvent(object: ValueEventListener {
 
 

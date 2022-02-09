@@ -22,7 +22,7 @@ import kotlinx.android.synthetic.main.item_user.view.*
 
 
 
-class UserAdapter constructor(private val title : String, private val descript:String, private val userList : ArrayList<User>) : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
+class UserAdapter constructor(private val title : String, private val descript:String, /*private val dueD : String, private val createdD : String,*/  private val userList : ArrayList<User>) : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
 
 
 
@@ -54,15 +54,14 @@ class UserAdapter constructor(private val title : String, private val descript:S
                 databaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app").getReference("ToDo")
 
                 val uid = user.uid.toString()
-                println("title: "+title + "descr: " + descript + "uid: " +uid)
 
-                val todo = ToDo(title, descript, uid, false)
+                val todo = ToDo(title, descript, uid/*, dueD, createdD*/)
 
                 databaseReference.child(title + uid).setValue(todo)
                 val intent = Intent(context, ToDoActivity::class.java)
 
                 startActivity(context, intent, null)
-                Toast.makeText(context, "ToDo Shared with " +user.firstName + " " + user.lastName, Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Todo Shared with " +user.firstName + " " + user.lastName, Toast.LENGTH_SHORT).show()
 
             }
 
