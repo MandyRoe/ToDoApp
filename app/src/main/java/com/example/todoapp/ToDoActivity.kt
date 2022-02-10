@@ -38,14 +38,13 @@ class ToDoActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_todo)
+
         auth = FirebaseAuth.getInstance()
         val uid = auth.currentUser?.uid
-
         databaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app").getReference("ToDo")
         todoRecyclerView = findViewById(R.id.rvToDoItems)
         todoRecyclerView.layoutManager = LinearLayoutManager(this)
         todoRecyclerView.setHasFixedSize(true)
-
         todoArrayList = arrayListOf<ToDo>()
         selectedTodoArrayList = arrayListOf<ToDo>()
 
