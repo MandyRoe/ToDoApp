@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.todoapp.authentification.LoginActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.google.firebase.database.ktx.getValue
 import kotlinx.android.synthetic.main.activity_main.drawerLayout
 import kotlinx.android.synthetic.main.activity_main.nav_view
 import kotlinx.android.synthetic.main.activity_todo.*
@@ -119,8 +120,10 @@ class ToDoActivity : AppCompatActivity() {
 
                         if (todoSnapshot.key!!.contains(uid)) {                       //only show user owned items
                             val todo = todoSnapshot.getValue(ToDo::class.java)
+                            val cDate = todoSnapshot.child("createdDate").getValue().toString()
+                            val dDate = todoSnapshot.child("dueDate").getValue().toString()
                             todoArrayList.add(todo!!)                              //arrayList with all the user owned todos in Database
-                            todoRecyclerView.adapter = ToDoAdapter(todoArrayList)
+                            todoRecyclerView.adapter = ToDoAdapter(dDate, cDate, todoArrayList)
 
                         }
 

@@ -18,14 +18,13 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.item_todo.view.*
 import java.time.LocalDateTime
 
 
-class ToDoAdapter(private val todoList : ArrayList<ToDo>) : RecyclerView.Adapter<ToDoAdapter.TodoViewHolder>() {
+class ToDoAdapter(private val dueDate : String, private val createdDate : String, private val todoList : ArrayList<ToDo>) : RecyclerView.Adapter<ToDoAdapter.TodoViewHolder>() {
 
     private lateinit var databaseReference: DatabaseReference
     private var auth : FirebaseAuth = FirebaseAuth.getInstance()
@@ -33,29 +32,30 @@ class ToDoAdapter(private val todoList : ArrayList<ToDo>) : RecyclerView.Adapter
     private var listData: MutableList<ToDo> = todoList as MutableList<ToDo>
     private lateinit var context : Context
 
+
+
+
     inner class TodoViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
         //fetched info
 
         @RequiresApi(Build.VERSION_CODES.O)
         fun bind (todo: ToDo, index: Int){
-
+            databaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app").getReference("ToDo")
+            val uid = auth.currentUser?.uid
             val title = itemView.findViewById<TextView>(R.id.tvTodoTitle)
             val description = itemView.findViewById<TextView>(R.id.tvDescription)
-          //  val dueDate = itemView.findViewById<TextView>(R.id.tvDueDate)
-         //   var createdDate = LocalDateTime.now().toString()
-
 
             val btn_delete = itemView.findViewById<Button>(R.id.btn_delete_todo)
             val btn_share = itemView.findViewById<Button>(R.id.btn_share_todo)
-            val uid = auth.currentUser?.uid
+
 
 
 
             context = super.itemView.context             //context for start activity intent
             title.text = todo.title
             description.text = todo.description
-           // dueDate.text = todo.dueDate
-         //   createdDate = todo.createdDate!!
+           // dueDate = todo.dueDate
+           // createdDate = todo.createdDate
 
 
 
@@ -69,11 +69,13 @@ class ToDoAdapter(private val todoList : ArrayList<ToDo>) : RecyclerView.Adapter
 
             btn_share.setOnClickListener{
 
+
+
                 val intent = Intent(context, SelectUsersActivity::class.java).apply{
                     putExtra("title", title.text.toString() )                       //send data to other activity
                     putExtra("description", description.text.toString())
-                  //  putExtra("dueDate", dueDate.text.toString())
-                  //  putExtra("createdDate", createdDate.toString())
+                    putExtra("dueDate", dueDate)
+                    putExtra("createdDate", createdDate)
 
                 }
                 startActivity(context, intent, null)

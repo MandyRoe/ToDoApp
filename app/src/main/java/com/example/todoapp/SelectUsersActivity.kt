@@ -20,8 +20,8 @@ class SelectUsersActivity : AppCompatActivity()  {
     private lateinit var shareUserArrayList: ArrayList<User>
     var shareTitle : String ?= null
     var shareDescr : String ?= null
-   // var shareDueDate : String ?= null
-   // var shareCreatedDate : String ?= null
+    var shareDueDate : String  = "null"
+    var shareCreatedDate : String = "null"
 
 
 
@@ -39,15 +39,15 @@ class SelectUsersActivity : AppCompatActivity()  {
         val uid = auth.currentUser?.uid
         val title = intent.getStringExtra("title").toString()
         val description = intent.getStringExtra("description").toString()
-     //   val dueDate = intent.getStringExtra("dueDate").toString()
-        //val createdDate= intent.getStringExtra("createdDate").toString()
+        val dueDate = intent.getStringExtra("dueDate").toString()
+        val createdDate= intent.getStringExtra("createdDate").toString()
 
 
 
         shareTitle = title
         shareDescr = description
-      //  shareDueDate = dueDate
-      //  shareCreatedDate = createdDate
+        shareDueDate = dueDate
+        shareCreatedDate = createdDate
 
         readUsers(uid!!)
 
@@ -70,7 +70,7 @@ class SelectUsersActivity : AppCompatActivity()  {
 
                         if(usersSnapshot.key != uid) {                              //only show other users
                             shareUserArrayList.add(users!!)                              //arrayList with all the user owned todos in Database
-                            userRecyclerView.adapter = UserAdapter(shareTitle!!, shareDescr!!/*, shareDueDate!!, shareCreatedDate!!*/ ,shareUserArrayList)
+                            userRecyclerView.adapter = UserAdapter(shareTitle!!, shareDescr!!, shareDueDate!!, shareCreatedDate!! ,shareUserArrayList)
                         }
                     //}
 

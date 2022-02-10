@@ -42,6 +42,7 @@ class TodoDetailActivity : AppCompatActivity() {
 
 
     }
+    //ads todo item to DB
     @RequiresApi(Build.VERSION_CODES.O)
     private fun addTodoData() {
         auth = FirebaseAuth.getInstance()

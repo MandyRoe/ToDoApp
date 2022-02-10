@@ -22,7 +22,7 @@ import kotlinx.android.synthetic.main.item_user.view.*
 
 
 
-class UserAdapter constructor(private val title : String, private val descript:String, /*private val dueD : String, private val createdD : String,*/  private val userList : ArrayList<User>) : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
+class UserAdapter constructor(private val title : String, private val descript:String, private val dueD : String, private val createdD : String,  private val userList : ArrayList<User>) : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
 
 
 
@@ -55,7 +55,7 @@ class UserAdapter constructor(private val title : String, private val descript:S
 
                 val uid = user.uid.toString()
 
-                val todo = ToDo(title, descript, uid/*, dueD, createdD*/)
+                val todo = ToDo(title, descript, uid, dueD, createdD)
 
                 databaseReference.child(title + uid).setValue(todo)
                 val intent = Intent(context, ToDoActivity::class.java)

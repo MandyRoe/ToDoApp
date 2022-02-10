@@ -10,6 +10,6 @@ data class ToDo(
     val description: String ?= null,
     val uid: String ?= null,
    // var check: Boolean ?= false,
-    var dueDate : String ?=null,
-    var createdDate: String ?= null
+    var dueDate : String  = "null",
+    var createdDate: String = "null"
 )
