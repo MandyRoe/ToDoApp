@@ -24,39 +24,39 @@ import java.time.LocalDateTime
 import kotlin.collections.ArrayList
 
 
-class ToDoActivity : AppCompatActivity() {
+class FriendActivity : AppCompatActivity() {
 
     private lateinit var auth : FirebaseAuth
     private lateinit var databaseReference: DatabaseReference
-    private lateinit var todoRecyclerView: RecyclerView
-    private lateinit var todoArrayList: ArrayList<ToDo>
-    lateinit var selectedTodoArrayList: ArrayList<ToDo>
+    private lateinit var friendRecyclerView: RecyclerView
+    private lateinit var befriendUserArrayList: ArrayList<User>
+
     private lateinit var toggle: ActionBarDrawerToggle
 
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_todo)
+        setContentView(R.layout.activity_friend)
 
         auth = FirebaseAuth.getInstance()
+        friendRecyclerView = findViewById(R.id.rvFriendItems)
+        friendRecyclerView.layoutManager = LinearLayoutManager(this)
+        friendRecyclerView.setHasFixedSize(true)
+        befriendUserArrayList = arrayListOf<User>()
+
         val uid = auth.currentUser?.uid
-        databaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app").getReference("ToDo")
-        todoRecyclerView = findViewById(R.id.rvToDoItems)
-        todoRecyclerView.layoutManager = LinearLayoutManager(this)
-        todoRecyclerView.setHasFixedSize(true)
-        todoArrayList = arrayListOf<ToDo>()
-        selectedTodoArrayList = arrayListOf<ToDo>()
+       // val title = intent.getStringExtra("title").toString()
 
 
-        readTodoData(uid!!)
+        readUsers(uid!!)
 
 
-        val btnAddToDo= findViewById<Button>(R.id.btnAddToDo)
-        btnAddToDo.setOnClickListener {
-            println("add pressed successfully")
+        val btnAddFriend= findViewById<Button>(R.id.btnAddFriend)
+        btnAddFriend.setOnClickListener {
+            println("add Friend pressed successfully")
 
-            startActivity(Intent(this, TodoDetailActivity::class.java))
+            startActivity(Intent(this, SelectFriendActivity::class.java))
 
 
         }
@@ -86,7 +86,6 @@ class ToDoActivity : AppCompatActivity() {
 
                 R.id.nav_friends -> startActivity(Intent(this, FriendActivity::class.java))
 
-                R.id.nav_friends -> Toast.makeText(applicationContext, "Clicked friends", Toast.LENGTH_SHORT).show()
 
                 R.id.nav_test_change_activity -> startActivity(
                     Intent(
@@ -108,36 +107,32 @@ class ToDoActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
 
 
-    private fun readTodoData(uid: String) {
+    private fun readUsers(uid: String) {
 
-        databaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app").getReference("ToDo")
+        databaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app").getReference("Users")
         databaseReference.addListenerForSingleValueEvent(object: ValueEventListener {   //addValueEventListener loops infinite
 
             override fun onDataChange(snapshot: DataSnapshot) {
 
-                    for (todoSnapshot in snapshot.children) {
+                for (usersSnapshot in snapshot.children) {
 
-                        if (todoSnapshot.key!!.contains(uid)) {                       //only show user owned items
-                            val todo = todoSnapshot.getValue(ToDo::class.java)
-                            val cDate = todoSnapshot.child("createdDate").getValue().toString()
-                            val dDate = todoSnapshot.child("dueDate").getValue().toString()
-                            todoArrayList.add(todo!!)                              //arrayList with all the user owned todos in Database
-                            todoRecyclerView.adapter = ToDoAdapter(dDate, cDate, todoArrayList)
+                    // if () {             //ToDo: filter Users by friend status
+                    val users = usersSnapshot.getValue(User::class.java)
 
-                        }
-
+                    if(usersSnapshot.key != uid) {                              //only show other users
+                        befriendUserArrayList.add(users!!)                              //arrayList with all the user owned todos in Database
+                        friendRecyclerView.adapter = FriendAdapter(befriendUserArrayList)
                     }
+                    //}
+
+                }
             }
 
             override fun onCancelled(error: DatabaseError) {
             }
         })
-        println("read todo ausgeführt")
 
     }
-
-
-
 
 
 
