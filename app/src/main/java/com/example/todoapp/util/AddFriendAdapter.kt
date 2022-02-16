@@ -49,20 +49,47 @@ class AddFriendAdapter constructor(private val addFriendUserList : ArrayList<Use
             btnAddFriendOnItem.setOnClickListener{
 
                 databaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app").getReference("FriendRequests")
+                val dbr2 : DatabaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app").getReference("Users")
                 auth = FirebaseAuth.getInstance()
                 val fromUid = auth.currentUser?.uid.toString()
                 val toUid = user.uid.toString()
                 val toName = user.firstName + " " + user.lastName
 
-                val frRequest = FriendRequest(fromUid, toUid, toName, false)
 
-                databaseReference.child(fromUid +toUid).setValue(frRequest)
+                dbr2.addListenerForSingleValueEvent(object: ValueEventListener {
+
+                    override fun onDataChange(snapshot: DataSnapshot) {
+
+                        for (users in snapshot.children) {
+
+                            if (users.child("uid").getValue()!!.equals(fromUid)) {             //ToDo: filter Users by friend status
+
+                                val fn = users.child("firstName").getValue().toString()
+                                val ln = users.child("lastName").getValue().toString()
+                                val fromName = fn + " " + ln
+
+                                val frRequest = FriendRequest(fromUid, toUid, fromName, toName, false)
+
+                                databaseReference.child(fromUid +toUid).setValue(frRequest)
+
+
+                            }
+
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                    }
+                })
+
+
                 val intent = Intent(context, DashboardActivity::class.java)
 
                 startActivity(context, intent, null)
                 Toast.makeText(context, "Friend request sent to " + toName, Toast.LENGTH_SHORT).show()
 
                 println("clicked")
+
 
             }
 

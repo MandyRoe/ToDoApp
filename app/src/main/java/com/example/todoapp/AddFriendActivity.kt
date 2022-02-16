@@ -32,7 +32,6 @@ class AddFriendActivity : AppCompatActivity()  {
         addFriendArrayList = arrayListOf<User>()
 
         val uid = auth.currentUser?.uid
-       // val title = intent.getStringExtra("title").toString()
 
 
         readUsers(uid!!)

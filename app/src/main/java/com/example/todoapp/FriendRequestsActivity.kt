@@ -43,15 +43,13 @@ class FriendRequestsActivity : AppCompatActivity()  {
     private fun readFriendRequests(uid: String) {
 
         databaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app").getReference("FriendRequests")
-        databaseReference.addListenerForSingleValueEvent(object: ValueEventListener {   //addValueEventListener loops infinite
+        databaseReference.addListenerForSingleValueEvent(object: ValueEventListener {
 
             override fun onDataChange(snapshot: DataSnapshot) {
 
                 for (frSnapshot in snapshot.children) {
 
                     if (frSnapshot.child("to_uid").getValue()!!.equals(uid)) {             //ToDo: filter Users by friend status
-
-
 
                         val request = frSnapshot.getValue(FriendRequest::class.java)
                             friendRequestArrayList.add(request!!)                              //arrayList with all the users in Database
