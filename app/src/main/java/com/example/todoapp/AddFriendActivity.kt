@@ -12,27 +12,27 @@ import com.example.todoapp.UserAdapter.*
 import kotlinx.android.synthetic.main.item_todo.*
 
 
-class SelectFriendActivity : AppCompatActivity()  {
+class AddFriendActivity : AppCompatActivity()  {
 
     private lateinit var auth : FirebaseAuth
     private lateinit var databaseReference: DatabaseReference
     private lateinit var friendRecyclerView: RecyclerView
-    private lateinit var shareUserArrayList: ArrayList<User>
+    private lateinit var addFriendArrayList: ArrayList<User>
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_selectusers)
+        setContentView(R.layout.activity_addfriend)
 
         auth = FirebaseAuth.getInstance()
         databaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app").getReference("Users")
-        friendRecyclerView = findViewById(R.id.rvUserItems)
+        friendRecyclerView = findViewById(R.id.rvFriendAddItems)
         friendRecyclerView.layoutManager = LinearLayoutManager(this)
         friendRecyclerView.setHasFixedSize(true)
-        shareUserArrayList = arrayListOf<User>()
+        addFriendArrayList = arrayListOf<User>()
 
         val uid = auth.currentUser?.uid
-        val title = intent.getStringExtra("title").toString()
+       // val title = intent.getStringExtra("title").toString()
 
 
         readUsers(uid!!)
@@ -55,8 +55,8 @@ class SelectFriendActivity : AppCompatActivity()  {
                         val users = usersSnapshot.getValue(User::class.java)
 
                         if(usersSnapshot.key != uid) {                              //only show other users
-                            shareUserArrayList.add(users!!)                              //arrayList with all the users in Database
-                            friendRecyclerView.adapter = FriendAdapter(shareUserArrayList)
+                            addFriendArrayList.add(users!!)                              //arrayList with all the users in Database
+                            friendRecyclerView.adapter = AddFriendAdapter(addFriendArrayList)
                         }
                     //}
 

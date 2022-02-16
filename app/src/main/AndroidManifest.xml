@@ -37,10 +37,13 @@
             android:name=".SelectUsersActivity"
             android:exported="false" />
         <activity
-            android:name=".SelectFriendActivity"
+            android:name=".AddFriendActivity"
             android:exported="false" />
         <activity
             android:name=".TodoDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".FriendRequestsActivity"
             android:exported="false" />
 
 

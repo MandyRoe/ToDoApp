@@ -22,27 +22,49 @@ import kotlinx.android.synthetic.main.item_user.view.*
 
 
 
-class FriendAdapter constructor(private val friendUserList : ArrayList<User>) : RecyclerView.Adapter<FriendAdapter.FriendViewHolder>() {
+class AddFriendAdapter constructor(private val addFriendUserList : ArrayList<User>) : RecyclerView.Adapter<AddFriendAdapter.AddFriendViewHolder>() {
 
     private lateinit var auth : FirebaseAuth
     private lateinit var databaseReference: DatabaseReference
     private lateinit var context : Context
-    private var listData: MutableList<User> = friendUserList as MutableList<User>
+    private var listData: MutableList<User> = addFriendUserList as MutableList<User>
 
 
 
-    inner class FriendViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
+    inner class AddFriendViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
 
-        val name : TextView = itemView.findViewById(R.id.tvFriendName)
+        val name : TextView = itemView.findViewById(R.id.tvAddFriendName)
         //fetched info
 
 
         fun bind(user: User, index: Int){
 
+            val btnAddFriendOnItem = itemView.findViewById<Button>(R.id.btnAddFriendOnItem)
 
             context = super.itemView.context
             name.text = user.firstName.toString() + " " + user.lastName.toString()
 
+
+
+            btnAddFriendOnItem.setOnClickListener{
+
+                databaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app").getReference("FriendRequests")
+                auth = FirebaseAuth.getInstance()
+                val fromUid = auth.currentUser?.uid.toString()
+                val toUid = user.uid.toString()
+                val toName = user.firstName + " " + user.lastName
+
+                val frRequest = FriendRequest(fromUid, toUid, toName, false)
+
+                databaseReference.child(fromUid +toUid).setValue(frRequest)
+                val intent = Intent(context, DashboardActivity::class.java)
+
+                startActivity(context, intent, null)
+                Toast.makeText(context, "Friend request sent to " + toName, Toast.LENGTH_SHORT).show()
+
+                println("clicked")
+
+            }
 
 
         }
@@ -50,18 +72,18 @@ class FriendAdapter constructor(private val friendUserList : ArrayList<User>) : 
 
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FriendViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AddFriendViewHolder {
 
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_friend, parent, false)
+        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_friend_add, parent, false)
 
-        return FriendViewHolder(itemView)
+        return AddFriendViewHolder(itemView)
 
 
 
     }
 
 
-    override fun onBindViewHolder(holder: FriendViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: AddFriendViewHolder, position: Int) {
        holder.bind(listData[position], position)
 
         /* val currentItem = userList[position]
@@ -131,7 +153,7 @@ class FriendAdapter constructor(private val friendUserList : ArrayList<User>) : 
 
     override fun getItemCount(): Int {
 
-        return friendUserList.size
+        return addFriendUserList.size
     }
 
 

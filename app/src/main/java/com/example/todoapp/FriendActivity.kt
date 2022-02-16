@@ -14,13 +14,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.todoapp.authentification.LoginActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import com.google.firebase.database.ktx.getValue
 import kotlinx.android.synthetic.main.activity_main.drawerLayout
 import kotlinx.android.synthetic.main.activity_main.nav_view
-import kotlinx.android.synthetic.main.activity_todo.*
-import kotlinx.android.synthetic.main.activity_tododetails.*
-import java.time.LocalDate
-import java.time.LocalDateTime
 import kotlin.collections.ArrayList
 
 
@@ -29,7 +24,7 @@ class FriendActivity : AppCompatActivity() {
     private lateinit var auth : FirebaseAuth
     private lateinit var databaseReference: DatabaseReference
     private lateinit var friendRecyclerView: RecyclerView
-    private lateinit var befriendUserArrayList: ArrayList<User>
+    private lateinit var friendsArrayList: ArrayList<User>
 
     private lateinit var toggle: ActionBarDrawerToggle
 
@@ -43,23 +38,34 @@ class FriendActivity : AppCompatActivity() {
         friendRecyclerView = findViewById(R.id.rvFriendItems)
         friendRecyclerView.layoutManager = LinearLayoutManager(this)
         friendRecyclerView.setHasFixedSize(true)
-        befriendUserArrayList = arrayListOf<User>()
+        friendsArrayList = arrayListOf<User>()
 
         val uid = auth.currentUser?.uid
        // val title = intent.getStringExtra("title").toString()
 
 
-        readUsers(uid!!)
+        readFriends(uid!!)
 
 
         val btnAddFriend= findViewById<Button>(R.id.btnAddFriend)
         btnAddFriend.setOnClickListener {
             println("add Friend pressed successfully")
 
-            startActivity(Intent(this, SelectFriendActivity::class.java))
+            startActivity(Intent(this, AddFriendActivity::class.java))
 
 
         }
+
+        val btnFriendRequests= findViewById<Button>(R.id.btnFriendRequests)
+        btnFriendRequests.setOnClickListener {
+            println("button pressed successfully")
+
+           startActivity(Intent(this, FriendRequestsActivity::class.java))
+
+
+        }
+
+
 
 
         //toggle home button functionality
@@ -107,23 +113,39 @@ class FriendActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
 
 
-    private fun readUsers(uid: String) {
+    private fun readFriends(uid: String) {
 
         databaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app").getReference("Users")
+        val dbr2 : DatabaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app").getReference("Friendships")
         databaseReference.addListenerForSingleValueEvent(object: ValueEventListener {   //addValueEventListener loops infinite
 
             override fun onDataChange(snapshot: DataSnapshot) {
 
-                for (usersSnapshot in snapshot.children) {
+                for (uS in snapshot.children) {
 
-                    // if () {             //ToDo: filter Users by friend status
-                    val users = usersSnapshot.getValue(User::class.java)
+                    val users = uS.getValue(User::class.java)
 
-                    if(usersSnapshot.key != uid) {                              //only show other users
-                        befriendUserArrayList.add(users!!)                              //arrayList with all the user owned todos in Database
-                        friendRecyclerView.adapter = FriendAdapter(befriendUserArrayList)
+                    if(uS.key != uid ) {                              //only show other users
+
+                        dbr2.addListenerForSingleValueEvent(object: ValueEventListener {
+
+                            override fun onDataChange(snapshot: DataSnapshot)  {
+                                for (ds in snapshot.children) {
+
+                                    if(ds.child("uid1").getValue().toString() == uid || ds.child("uid2").getValue().toString() == uid) {  //check for friendship
+                                        friendsArrayList.add(users!!)
+                                        friendRecyclerView.adapter = FriendAdapter(friendsArrayList)
+
+                                    }
+                                }
+                            }
+                            override fun onCancelled(error: DatabaseError) {
+                                TODO("Not yet implemented")
+                            }
+
+                        })
+
                     }
-                    //}
 
                 }
             }

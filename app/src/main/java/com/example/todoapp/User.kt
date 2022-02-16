@@ -1,8 +1,9 @@
 package com.example.todoapp
 
-import java.util.*
+import com.google.firebase.database.*
 
-data class User(
+
+class User(
     var uid : String ?= null,
     var firstName : String ?= null,
     var lastName : String ?= null,
