@@ -28,6 +28,18 @@
             app:layout_constraintTop_toTopOf="parent" />
 
 
+        <TextView
+            android:id="@+id/tvFrom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="from: "
+            android:textSize="20sp"
+            app:layout_constraintBottom_toTopOf="@+id/btn_frAccept"
+            app:layout_constraintEnd_toStartOf="@id/tvFriendRequestName"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tvFriendRequestName"
+            />
+
         <Button
             android:id="@+id/btn_frAccept"
             android:layout_width="175dp"

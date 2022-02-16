@@ -44,7 +44,7 @@ class FriendRequestAdapter constructor(private val friendRequestList : ArrayList
             val btnFrDecline = itemView.findViewById<Button>(R.id.btn_frDecline)
 
             context = super.itemView.context
-            name.text = request.to_name
+            name.text = request.from_name
 
 
 

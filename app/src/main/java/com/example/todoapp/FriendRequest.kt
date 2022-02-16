@@ -6,6 +6,7 @@ import com.google.firebase.database.FirebaseDatabase
 data class FriendRequest(
     var from_uid : String ="",
     var to_uid : String ="",
+    var from_name : String ="",
     var to_name : String ="",
     var accepted : Boolean ?= false
 ) {
