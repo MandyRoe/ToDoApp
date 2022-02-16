@@ -7,6 +7,18 @@
     android:background="@drawable/sec_background"
     tools:context=".DashboardActivity">
 
+
+    <ImageView
+        android:id="@+id/imageView5"
+        android:layout_width="238dp"
+        android:layout_height="228dp"
+        app:layout_constraintBottom_toTopOf="@+id/dash_todo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ownlogo"
+        android:contentDescription="@string/todo_logo" />
+
     <Button
         android:id="@+id/dash_todo"
         android:layout_width="0dp"
@@ -69,16 +81,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/dash_change_pw" />
 
-    <ImageView
-        android:id="@+id/imageView5"
-        android:layout_width="238dp"
-        android:layout_height="228dp"
-        app:layout_constraintBottom_toTopOf="@+id/dash_todo"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ownlogo"
-        android:contentDescription="@string/todo_logo" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

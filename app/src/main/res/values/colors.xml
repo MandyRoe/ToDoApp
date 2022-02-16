@@ -9,6 +9,7 @@
     <color name="white">#FFFFFFFF</color>
 
 
+
     <!-- colors for the ui-->
     <color name="turquoise">#41c9c5</color>
     <color name="blue">#4ea1d1</color>
@@ -20,6 +21,7 @@
     <color name="whiteTextColor">#fff</color>
     <color name="loginBkColor">#f0f0f0</color>
     <color name="whiteCardColor">#fff</color>
+    <color name="light_grey">#F3F3F3</color>
 
 
 </resources>

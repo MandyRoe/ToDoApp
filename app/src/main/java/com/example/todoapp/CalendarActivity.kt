@@ -1,53 +1,176 @@
 package com.example.todoapp
 
 import android.content.Intent
-import android.icu.text.CaseMap
-import android.os.Bundle
-import android.os.PersistableBundle
-import android.provider.CalendarContract
-import android.widget.Button
-import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import android.view.MenuItem
+import android.widget.Button
+import android.widget.Toast
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.core.view.GravityCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.todoapp.authentification.LoginActivity
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_calendar.*
-import java.util.*
+import kotlinx.android.synthetic.main.activity_calendar.drawerLayout
+import kotlinx.android.synthetic.main.activity_calendar.nav_view
+import kotlinx.android.synthetic.main.activity_main.*
 
 class CalendarActivity : AppCompatActivity() {
+
+    private lateinit var auth : FirebaseAuth
+    private lateinit var databaseReference: DatabaseReference
+    private lateinit var todoRecyclerView: RecyclerView
+    private lateinit var todoArrayList: ArrayList<ToDo>
+    lateinit var selectedTodoArrayList: ArrayList<ToDo>
+    private lateinit var toggle: ActionBarDrawerToggle
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_calendar)
 
-        // initialize variables
-        val calendar = Calendar.getInstance()
-        val tvTitle = findViewById<EditText>(R.id.tv_event_title)
-        val tvLocation = findViewById<EditText>(R.id.tv_location)
-        val tvDescription = findViewById<EditText>(R.id.tv_description)
-        val btnAdd = findViewById<Button>(R.id.btn_add_events)
+        auth = FirebaseAuth.getInstance()
+        val uid = auth.currentUser?.uid
+        databaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app").getReference("ToDo")
+        todoRecyclerView = findViewById(R.id.rvToDoItems)
+        todoRecyclerView.layoutManager = LinearLayoutManager(this)
+        todoRecyclerView.setHasFixedSize(true)
+        todoArrayList = arrayListOf<ToDo>()
+        selectedTodoArrayList = arrayListOf<ToDo>()
 
-        // set btn to clickListener to activate it; set the time to now and 30min in milliseconds
-        btnAdd.setOnClickListener {
-            addEvent(tvTitle.text.toString(), tvLocation.text.toString(), tvDescription.text.toString(), calendar.timeInMillis, calendar.timeInMillis + 1800000)
+
+
+
+
+
+
+        // _: it is calendar instance. year: it’s selected year. month: it’s selected month. day: and It’s selected day.
+        calendarView.setOnDateChangeListener { _, year, month, day ->
+            Toast.makeText(this@CalendarActivity, "The selected date is $year.${month + 1}.$day", Toast.LENGTH_SHORT).show()
+            readTodoDate(uid!!,year.toString(),ddMonth(month+1),ddDay(day))
+            todoArrayList.clear()
 
         }
-    }
 
-    fun addEvent(title: String, location: String, description: String, begin: Long, end: Long){
 
-        // intent to set the data for the calendar
-        val intent = Intent(Intent.ACTION_INSERT).apply {
-            // to transfer the data later into the calendar
-            data = CalendarContract.Events.CONTENT_EXCEPTION_URI
-            putExtra(CalendarContract.Events.TITLE, title)
-            putExtra(CalendarContract.Events.EVENT_LOCATION, location)
-            putExtra(CalendarContract.Events.DESCRIPTION, description)
-            putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, begin)
-            putExtra(CalendarContract.EXTRA_EVENT_END_TIME, end)
-            type = "vnd.android.cursor.dir/event"
+
+        val backButton = findViewById<Button>(R.id.btn_back)
+        backButton.setOnClickListener{
+            val Intent = Intent(this,DashboardActivity::class.java)
+            startActivity(Intent)
         }
 
-        // call the calendar function, if there is a calendar function
-        if(intent.resolveActivity(packageManager) != null)
-            startActivity(intent)
+
+        //toggle home button functionality
+        toggle = ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close)
+        drawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
+
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        //nav items functionality
+        nav_view.bringToFront()
+        nav_view.setNavigationItemSelectedListener {
+            when (it.itemId) {
+                R.id.nav_home -> startActivity(Intent(this, DashboardActivity::class.java))
+
+                R.id.nav_logout -> {
+                    auth = FirebaseAuth.getInstance()
+                    auth.signOut()
+                    Toast.makeText(this, "Logout", Toast.LENGTH_SHORT)
+                        .show()
+                    startActivity(Intent(this, LoginActivity::class.java))
+                }
+                R.id.nav_profile -> startActivity(Intent(this, ProfileActivity::class.java))
+
+                R.id.nav_friends -> startActivity(Intent(this, SelectUsersActivity::class.java))
+
+                R.id.nav_friends -> Toast.makeText(applicationContext, "Clicked friends", Toast.LENGTH_SHORT).show()
+
+                R.id.nav_test_change_activity -> startActivity(
+                    Intent(
+                        this,
+                        CalendarActivity::class.java
+                    )
+                )
+
+
+            }
+            true
+        }
+
+
+
+    } //onCreate end
+    //parse from possibly single digit to double digit String
+    private fun ddMonth(month : Int): String {
+        if (month <10){
+            return "0"+month
+        }
+        else return ""+month
+    }
+    //parse from possibly single digit to double digit String
+    private fun ddDay(day : Int) : String{
+        if (day <10){
+            return "0"+day
+        }
+        else return ""+day
+    }
+
+    private fun readTodoDate(uid: String, y :String, m :String, d:String ) {
+
+        databaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app").getReference("ToDo")
+        databaseReference.addListenerForSingleValueEvent(object: ValueEventListener {   //addValueEventListener would loop infinite
+
+            override fun onDataChange(snapshot: DataSnapshot) {
+
+                for (todoSnapshot in snapshot.children) {
+
+                    if (todoSnapshot.key!!.contains(uid)) {                                  //only show user owned items
+                        val todo = todoSnapshot.getValue(ToDo::class.java)
+                        val cDate = todoSnapshot.child("createdDate").getValue().toString()
+                        val dDate = todoSnapshot.child("dueDate").getValue().toString()
+                        println("due Date " + dDate)
+                        println("********selected date" + y +"-"+ m +"-"+ d)
+                        if (dDate == y +"-"+ m +"-"+ d){
+                            todoArrayList.add(todo!!)                                            //arrayList with all the user owned todos in Database
+                            todoRecyclerView.adapter = ToDoAdapter(dDate, cDate, todoArrayList)
+
+                    }
+                    }
+
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+            }
+        })
+        println("read todo date ausgeführt")
 
     }
+
+
+
+    // hamburger button functionality
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (toggle.onOptionsItemSelected(item)) {
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    //don't close app if drawer is open and back is pressed
+    override fun onBackPressed() {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START)
+        }
+        return super.onBackPressed()
+    }
+
+
+
+
+
 }

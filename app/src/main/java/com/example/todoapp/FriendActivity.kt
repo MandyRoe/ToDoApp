@@ -14,52 +14,58 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.todoapp.authentification.LoginActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import com.google.firebase.database.ktx.getValue
 import kotlinx.android.synthetic.main.activity_main.drawerLayout
 import kotlinx.android.synthetic.main.activity_main.nav_view
-import kotlinx.android.synthetic.main.activity_todo.*
-import kotlinx.android.synthetic.main.activity_tododetails.*
-import java.time.LocalDate
-import java.time.LocalDateTime
 import kotlin.collections.ArrayList
 
 
-class ToDoActivity : AppCompatActivity() {
+class FriendActivity : AppCompatActivity() {
 
     private lateinit var auth : FirebaseAuth
     private lateinit var databaseReference: DatabaseReference
-    private lateinit var todoRecyclerView: RecyclerView
-    private lateinit var todoArrayList: ArrayList<ToDo>
-    lateinit var selectedTodoArrayList: ArrayList<ToDo>
+    private lateinit var friendRecyclerView: RecyclerView
+    private lateinit var friendsArrayList: ArrayList<User>
+
     private lateinit var toggle: ActionBarDrawerToggle
 
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_todo)
+        setContentView(R.layout.activity_friend)
 
         auth = FirebaseAuth.getInstance()
+        friendRecyclerView = findViewById(R.id.rvFriendItems)
+        friendRecyclerView.layoutManager = LinearLayoutManager(this)
+        friendRecyclerView.setHasFixedSize(true)
+        friendsArrayList = arrayListOf<User>()
+
         val uid = auth.currentUser?.uid
-        databaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app").getReference("ToDo")
-        todoRecyclerView = findViewById(R.id.rvToDoItems)
-        todoRecyclerView.layoutManager = LinearLayoutManager(this)
-        todoRecyclerView.setHasFixedSize(true)
-        todoArrayList = arrayListOf<ToDo>()
-        selectedTodoArrayList = arrayListOf<ToDo>()
+       // val title = intent.getStringExtra("title").toString()
 
 
-        readTodoData(uid!!)
+        readFriends(uid!!)
 
 
-        val btnAddToDo= findViewById<Button>(R.id.btnAddToDo)
-        btnAddToDo.setOnClickListener {
-            println("add pressed successfully")
+        val btnAddFriend= findViewById<Button>(R.id.btnAddFriend)
+        btnAddFriend.setOnClickListener {
+            println("add Friend pressed successfully")
 
-            startActivity(Intent(this, TodoDetailActivity::class.java))
+            startActivity(Intent(this, AddFriendActivity::class.java))
 
 
         }
+
+        val btnFriendRequests= findViewById<Button>(R.id.btnFriendRequests)
+        btnFriendRequests.setOnClickListener {
+            println("button pressed successfully")
+
+           startActivity(Intent(this, FriendRequestsActivity::class.java))
+
+
+        }
+
+
 
 
         //toggle home button functionality
@@ -86,7 +92,6 @@ class ToDoActivity : AppCompatActivity() {
 
                 R.id.nav_friends -> startActivity(Intent(this, FriendActivity::class.java))
 
-                R.id.nav_friends -> Toast.makeText(applicationContext, "Clicked friends", Toast.LENGTH_SHORT).show()
 
                 R.id.nav_test_change_activity -> startActivity(
                     Intent(
@@ -108,36 +113,48 @@ class ToDoActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
 
 
-    private fun readTodoData(uid: String) {
+    private fun readFriends(uid: String) {
 
-        databaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app").getReference("ToDo")
+        databaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app").getReference("Users")
+        val dbr2 : DatabaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app").getReference("Friendships")
         databaseReference.addListenerForSingleValueEvent(object: ValueEventListener {   //addValueEventListener loops infinite
 
             override fun onDataChange(snapshot: DataSnapshot) {
 
-                    for (todoSnapshot in snapshot.children) {
+                for (uS in snapshot.children) {
 
-                        if (todoSnapshot.key!!.contains(uid)) {                       //only show user owned items
-                            val todo = todoSnapshot.getValue(ToDo::class.java)
-                            val cDate = todoSnapshot.child("createdDate").getValue().toString()
-                            val dDate = todoSnapshot.child("dueDate").getValue().toString()
-                            todoArrayList.add(todo!!)                              //arrayList with all the user owned todos in Database
-                            todoRecyclerView.adapter = ToDoAdapter(dDate, cDate, todoArrayList)
+                    val users = uS.getValue(User::class.java)
 
-                        }
+                    if(uS.key != uid ) {                              //only show other users
+
+                        dbr2.addListenerForSingleValueEvent(object: ValueEventListener {
+
+                            override fun onDataChange(snapshot: DataSnapshot)  {
+                                for (ds in snapshot.children) {
+
+                                    if(ds.child("uid1").getValue().toString() == uid || ds.child("uid2").getValue().toString() == uid) {  //check for friendship
+                                        friendsArrayList.add(users!!)
+                                        friendRecyclerView.adapter = FriendAdapter(friendsArrayList)
+
+                                    }
+                                }
+                            }
+                            override fun onCancelled(error: DatabaseError) {
+                                TODO("Not yet implemented")
+                            }
+
+                        })
 
                     }
+
+                }
             }
 
             override fun onCancelled(error: DatabaseError) {
             }
         })
-        println("read todo ausgeführt")
 
     }
-
-
-
 
 
 

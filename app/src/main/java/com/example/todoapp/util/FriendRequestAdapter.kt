@@ -5,62 +5,66 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Paint.FAKE_BOLD_TEXT_FLAG
 import android.graphics.Paint.STRIKE_THRU_TEXT_FLAG
+import android.os.Build
+import android.system.Os.remove
 // LayoutInflater converts our xml Layout into kotlin
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.protobuf.Value
+import kotlinx.android.synthetic.main.item_friendrequest.view.*
 import kotlinx.android.synthetic.main.item_todo.view.*
 import kotlinx.android.synthetic.main.item_todo.view.cbDone
 import kotlinx.android.synthetic.main.item_user.view.*
 
 
 
-class UserAdapter constructor(private val title : String, private val descript:String, private val dueD : String, private val createdD : String,  private val userList : ArrayList<User>) : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
+class FriendRequestAdapter constructor(private val friendRequestList : ArrayList<FriendRequest>) : RecyclerView.Adapter<FriendRequestAdapter.FriendRequestViewHolder>() {
 
-
+    private lateinit var auth : FirebaseAuth
     private lateinit var databaseReference: DatabaseReference
     private lateinit var context : Context
-    private var listData: MutableList<User> = userList as MutableList<User>
+    private var listData: MutableList<FriendRequest> = friendRequestList as MutableList<FriendRequest>
 
 
 
-    inner class UserViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
-
-        val name : TextView = itemView.findViewById(R.id.tvUserName)
-        //fetched info
+    inner class FriendRequestViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
 
 
-        fun bind(user: User, index: Int){
-
-
-            val name = itemView.findViewById<TextView>(R.id.tvUserName)
-            val btnShareToUser = itemView.findViewById<Button>(R.id.btnShareToUser)
+        fun bind(request: FriendRequest, index: Int){
+            val name : TextView = itemView.findViewById(R.id.tvFriendRequestName)
+            val btnFrAccept = itemView.findViewById<Button>(R.id.btn_frAccept)
+            val btnFrDecline = itemView.findViewById<Button>(R.id.btn_frDecline)
 
             context = super.itemView.context
-            name.text = user.firstName.toString() + " " + user.lastName.toString()
+            name.text = request.to_name
 
 
 
-            btnShareToUser.setOnClickListener{
+            btnFrAccept.setOnClickListener{
 
-                databaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app").getReference("ToDo")
+                FriendRequest(request.from_uid, request.to_uid).accept()    //create Friendship in DB
 
-                val uid = user.uid.toString()
-
-                val todo = ToDo(title, descript, uid, dueD, createdD)
-
-                databaseReference.child(title + uid).setValue(todo)
-                val intent = Intent(context, ToDoActivity::class.java)
-
+                val intent = Intent(context, FriendActivity::class.java)
                 startActivity(context, intent, null)
-                Toast.makeText(context, "Todo Shared with " +user.firstName + " " + user.lastName, Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Friend request accepted from " + request.from_uid, Toast.LENGTH_SHORT).show()
+
+            }
+
+            btnFrDecline.setOnClickListener{
+
+                FriendRequest(request.from_uid, request.to_uid).decline()           //delete Friend Request in DB
+
+                val intent = Intent(context, FriendActivity::class.java)
+                startActivity(context, intent, null)
+                Toast.makeText(context, "Friend request declined from " + request.from_uid, Toast.LENGTH_SHORT).show()
 
             }
 
@@ -70,18 +74,18 @@ class UserAdapter constructor(private val title : String, private val descript:S
 
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FriendRequestViewHolder {
 
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_user, parent, false)
+        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_friendrequest, parent, false)
 
-        return UserViewHolder(itemView)
+        return FriendRequestViewHolder(itemView)
 
 
 
     }
 
 
-    override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: FriendRequestViewHolder, position: Int) {
        holder.bind(listData[position], position)
 
         /* val currentItem = userList[position]
@@ -151,7 +155,7 @@ class UserAdapter constructor(private val title : String, private val descript:S
 
     override fun getItemCount(): Int {
 
-        return userList.size
+        return friendRequestList.size
     }
 
 

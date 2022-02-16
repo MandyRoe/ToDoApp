@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="8dp"
+    app:cardBackgroundColor="@color/light_grey"
+    android:layout_margin="5dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="108dp"
+        android:paddingTop="8dp">
+
+
+        <TextView
+            android:id="@+id/tvFriendRequestName"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:text="Vorname Nachname"
+            android:textSize="25sp"
+            app:layout_constraintBottom_toTopOf="@+id/btn_frAccept"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <Button
+            android:id="@+id/btn_frAccept"
+            android:layout_width="175dp"
+            android:layout_height="50dp"
+            android:backgroundTint="@color/green"
+            android:text="Accept"
+            app:layout_constraintEnd_toStartOf="@id/btn_frDecline"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvFriendRequestName" />
+
+        <Button
+            android:id="@+id/btn_frDecline"
+            android:layout_width="175dp"
+            android:layout_height="50dp"
+            android:backgroundTint="@color/design_default_color_error"
+            android:text="Decline"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/btn_frAccept"
+            app:layout_constraintTop_toBottomOf="@id/tvFriendRequestName" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.cardview.widget.CardView>

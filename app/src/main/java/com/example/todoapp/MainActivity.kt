@@ -7,12 +7,9 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.todoapp.authentification.LoginActivity
-import com.example.todoapp.authentification.ResetPWActivity
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_test.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -57,7 +54,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_test_change_activity -> startActivity(
                     Intent(
                         this,
-                        TestActivity::class.java
+                        CalendarActivity::class.java
                     )
                 )
 

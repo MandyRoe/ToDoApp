@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ToDoApp">
         <activity
-            android:name=".TestActivity"
+            android:name=".CalendarActivity"
             android:exported="false" />
         <activity
             android:name=".authentification.ResetPWActivity"
@@ -31,7 +31,19 @@
             android:name=".ToDoActivity"
             android:exported="false" />
         <activity
+            android:name=".FriendActivity"
+            android:exported="false" />
+        <activity
             android:name=".SelectUsersActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AddFriendActivity"
+            android:exported="false" />
+        <activity
+            android:name=".TodoDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".FriendRequestsActivity"
             android:exported="false" />
 
 
@@ -45,7 +57,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".CalendarActivity"
+            android:name=".CalendarActivity_not_used"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.INSERT"/>

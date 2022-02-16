@@ -20,6 +20,8 @@ class SelectUsersActivity : AppCompatActivity()  {
     private lateinit var shareUserArrayList: ArrayList<User>
     var shareTitle : String ?= null
     var shareDescr : String ?= null
+    var shareDueDate : String  = "null"
+    var shareCreatedDate : String = "null"
 
 
 
@@ -37,9 +39,15 @@ class SelectUsersActivity : AppCompatActivity()  {
         val uid = auth.currentUser?.uid
         val title = intent.getStringExtra("title").toString()
         val description = intent.getStringExtra("description").toString()
+        val dueDate = intent.getStringExtra("dueDate").toString()
+        val createdDate= intent.getStringExtra("createdDate").toString()
 
-       shareTitle = title
-       shareDescr = description
+
+
+        shareTitle = title
+        shareDescr = description
+        shareDueDate = dueDate
+        shareCreatedDate = createdDate
 
         readUsers(uid!!)
 
@@ -51,20 +59,40 @@ class SelectUsersActivity : AppCompatActivity()  {
     private fun readUsers(uid: String) {
 
         databaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app").getReference("Users")
+        val dbr2 : DatabaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app").getReference("Friendships")
         databaseReference.addListenerForSingleValueEvent(object: ValueEventListener {   //addValueEventListener loops infinite
 
             override fun onDataChange(snapshot: DataSnapshot) {
 
                 for (usersSnapshot in snapshot.children) {
 
-                   // if () {             //ToDo: filter Users by friend status
+
                         val users = usersSnapshot.getValue(User::class.java)
 
-                        if(usersSnapshot.key != uid) {                              //only show other users
-                            shareUserArrayList.add(users!!)                              //arrayList with all the user owned todos in Database
-                            userRecyclerView.adapter = UserAdapter(shareTitle!!, shareDescr!! ,shareUserArrayList)
+                        if(usersSnapshot.key != uid) {
+
+
+                            dbr2.addListenerForSingleValueEvent(object: ValueEventListener {
+
+                                override fun onDataChange(snapshot: DataSnapshot)  {
+                                    for (ds in snapshot.children) {
+
+                                        if(ds.child("uid1").getValue().toString() == uid || ds.child("uid2").getValue().toString() == uid) {  //check for friendship
+                                            //only show other users
+                                            shareUserArrayList.add(users!!)                              //arrayList with all the user owned todos in Database
+                                            userRecyclerView.adapter = UserAdapter(shareTitle!!, shareDescr!!, shareDueDate!!, shareCreatedDate!! ,shareUserArrayList)
+
+                                        }
+                                    }
+                                }
+                                override fun onCancelled(error: DatabaseError) {
+                                    TODO("Not yet implemented")
+                                }
+
+                            })
+
                         }
-                    //}
+
 
                 }
             }
