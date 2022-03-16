@@ -15,6 +15,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
@@ -47,6 +48,7 @@ class ToDoAdapter(private val dueDate : String, private val createdDate : String
 
             val btn_delete = itemView.findViewById<Button>(R.id.btn_delete_todo)
             val btn_share = itemView.findViewById<Button>(R.id.btn_share_todo)
+            val btn_done = itemView.findViewById<Button>(R.id.btn_done_todo)
 
 
 
@@ -69,10 +71,9 @@ class ToDoAdapter(private val dueDate : String, private val createdDate : String
 
             btn_share.setOnClickListener{
 
-
-
+                //send data to other activity
                 val intent = Intent(context, SelectUsersActivity::class.java).apply{
-                    putExtra("title", title.text.toString() )                       //send data to other activity
+                    putExtra("title", title.text.toString() )
                     putExtra("description", description.text.toString())
                     putExtra("dueDate", dueDate)
                     putExtra("createdDate", createdDate)
@@ -80,6 +81,32 @@ class ToDoAdapter(private val dueDate : String, private val createdDate : String
                 }
                 startActivity(context, intent, null)
 
+
+            }
+
+            btn_done.setOnClickListener{
+
+
+                auth = FirebaseAuth.getInstance()
+                var uid = auth.currentUser?.uid
+                val doneDate = LocalDateTime.now().toString()
+                databaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app").getReference("ToDo")
+                databaseReference.addListenerForSingleValueEvent(object: ValueEventListener {
+
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        for (ds in snapshot.children) {
+
+                            databaseReference.child(title.text.toString() + uid).child("done").setValue(true)
+                            databaseReference.child(title.text.toString() + uid).child("doneDate").setValue(doneDate)
+
+                        }
+                    }
+                    override fun onCancelled(error: DatabaseError) {
+                        //not needed
+                    }
+
+
+                })
 
             }
 
@@ -102,6 +129,7 @@ class ToDoAdapter(private val dueDate : String, private val createdDate : String
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: TodoViewHolder, position: Int) {
         holder.bind(listData[position], position)
+
 
         /* val currentItem = todoList[position]
          holder.title.text = currentItem.title

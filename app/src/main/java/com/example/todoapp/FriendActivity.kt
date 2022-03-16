@@ -79,7 +79,7 @@ class FriendActivity : AppCompatActivity() {
         nav_view.bringToFront()
         nav_view.setNavigationItemSelectedListener {
             when (it.itemId) {
-                R.id.nav_home -> startActivity(Intent(this, DashboardActivity::class.java))
+                R.id.nav_home -> startActivity(Intent(this, MainActivity::class.java))
 
                 R.id.nav_logout -> {
                     auth = FirebaseAuth.getInstance()

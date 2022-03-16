@@ -34,6 +34,11 @@
         android:title="Calendar"
         android:icon="@drawable/share_icon"/>
 
+    <item
+        android:id="@+id/nav_analysis"
+        android:title="Analysis"
+        android:icon="@drawable/chart_icon"/>
+
 
 
 </menu>

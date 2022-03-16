@@ -15,7 +15,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="121dp">
+        android:layout_height="121dp"
+        android:id="@+id/item_whole">
 
         <TextView
             android:id="@+id/tvTodoTitle"
@@ -52,7 +53,7 @@
             android:background="@drawable/share_icon"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintEnd_toStartOf="@id/cbDone"
+            app:layout_constraintEnd_toStartOf="@id/btn_done_todo"
             app:layout_constraintWidth_percent=".1" />
 
         <TextView
@@ -66,10 +67,13 @@
             app:layout_constraintStart_toStartOf="@+id/tvTodoTitle"
             app:layout_constraintTop_toBottomOf="@+id/tvTodoTitle"/>
 
-        <CheckBox
-            android:id="@+id/cbDone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <Button
+            android:id="@+id/btn_done_todo"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/check_icon"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintWidth_percent=".1"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
              />

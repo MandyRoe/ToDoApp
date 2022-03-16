@@ -14,13 +14,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.todoapp.authentification.LoginActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import com.google.firebase.database.ktx.getValue
 import kotlinx.android.synthetic.main.activity_main.drawerLayout
 import kotlinx.android.synthetic.main.activity_main.nav_view
-import kotlinx.android.synthetic.main.activity_todo.*
-import kotlinx.android.synthetic.main.activity_tododetails.*
-import java.time.LocalDate
-import java.time.LocalDateTime
 import kotlin.collections.ArrayList
 
 
@@ -56,7 +51,7 @@ class ToDoActivity : AppCompatActivity() {
         btnAddToDo.setOnClickListener {
             println("add pressed successfully")
 
-            startActivity(Intent(this, TodoDetailActivity::class.java))
+            startActivity(Intent(this, AddTodoActivity::class.java))
 
 
         }
@@ -73,7 +68,7 @@ class ToDoActivity : AppCompatActivity() {
         nav_view.bringToFront()
         nav_view.setNavigationItemSelectedListener {
             when (it.itemId) {
-                R.id.nav_home -> startActivity(Intent(this, DashboardActivity::class.java))
+                R.id.nav_home -> startActivity(Intent(this, MainActivity::class.java))
 
                 R.id.nav_logout -> {
                     auth = FirebaseAuth.getInstance()
@@ -94,6 +89,8 @@ class ToDoActivity : AppCompatActivity() {
                         CalendarActivity::class.java
                     )
                 )
+
+                R.id.nav_analysis -> startActivity(Intent(this, AnalysisActivity::class.java))
 
 
             }

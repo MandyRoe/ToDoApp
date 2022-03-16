@@ -17,7 +17,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.protobuf.Value
 import kotlinx.android.synthetic.main.item_todo.view.*
-import kotlinx.android.synthetic.main.item_todo.view.cbDone
+
 import kotlinx.android.synthetic.main.item_user.view.*
 
 
@@ -54,7 +54,7 @@ class UserAdapter constructor(private val title : String, private val descript:S
 
                 val uid = user.uid.toString()
 
-                val todo = ToDo(title, descript, uid, dueD, createdD)
+                val todo = ToDo(title, descript, uid, false,  dueD, createdD)
 
                 databaseReference.child(title + uid).setValue(todo)
                 val intent = Intent(context, ToDoActivity::class.java)

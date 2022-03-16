@@ -16,10 +16,10 @@
             android:name=".authentification.ResetPWActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".MainActivity_not_used"
             android:exported="false" />
         <activity
-            android:name=".DashboardActivity"
+            android:name=".MainActivity"
             android:exported="false" />
         <activity
             android:name=".RegisterActivity"
@@ -40,10 +40,13 @@
             android:name=".AddFriendActivity"
             android:exported="false" />
         <activity
-            android:name=".TodoDetailActivity"
+            android:name=".AddTodoActivity"
             android:exported="false" />
         <activity
             android:name=".FriendRequestsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AnalysisActivity"
             android:exported="false" />
 
 

@@ -5,18 +5,13 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Patterns
-import android.util.Patterns.EMAIL_ADDRESS
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.core.util.PatternsCompat.EMAIL_ADDRESS
 import com.example.todoapp.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_login.*
-import java.util.regex.Pattern
 
 class LoginActivity : AppCompatActivity() {
 
@@ -118,7 +113,7 @@ class LoginActivity : AppCompatActivity() {
         if(currentUser != null) {
             // check if the user has verified his email address
             if(currentUser.isEmailVerified){
-                startActivity(Intent(this, DashboardActivity::class.java))
+                startActivity(Intent(this, MainActivity::class.java))
             finish()
             }else{
             Toast.makeText(

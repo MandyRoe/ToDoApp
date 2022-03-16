@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
-import kotlinx.android.synthetic.main.activity_calendar.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 import android.net.Uri
@@ -74,7 +73,7 @@ class ProfileActivity : AppCompatActivity() {
         val homeButton = findViewById<Button>(R.id.homeBtn)
         toBeOrNotToBe(homeButton)
         homeButton.setOnClickListener{
-            val intent = Intent(this,DashboardActivity::class.java)
+            val intent = Intent(this,MainActivity::class.java)
             startActivity(intent)
         }
 
@@ -88,37 +87,7 @@ class ProfileActivity : AppCompatActivity() {
         startActivity(Intent(this, ProfileActivity::class.java))
     }
 
-    //check if profile exists for create or change button
-    private fun createOrEdit(button: Button) {
-        auth = FirebaseAuth.getInstance()
-        val uid = auth.currentUser?.uid
 
-        databaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Users")
-        databaseReference.addListenerForSingleValueEvent(object: ValueEventListener {
-
-            override fun onDataChange(snapshot: DataSnapshot) {                      //todo registered check auf array umstellen
-                for (ds in snapshot.getChildren()) {
-                    if (ds.key == uid!!) {
-                        var checkReg = ds.child("reg_flag").getValue()
-                        if(checkReg !=true){
-                            button?.text = "Edit Profile"
-                            println("reg_flag doesn't exist so user is registered")
-                        }
-                        break
-                    }
-                }
-
-
-
-            }
-            override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
-            }
-
-
-        })
-
-    }
     //load existing text for user from db
     private fun showProfile(uid : String) {
         databaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Users")
@@ -163,6 +132,39 @@ class ProfileActivity : AppCompatActivity() {
         })
 
     }
+
+    //check if profile exists for create or change button
+    private fun createOrEdit(button: Button) {
+        auth = FirebaseAuth.getInstance()
+        val uid = auth.currentUser?.uid
+
+        databaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Users")
+        databaseReference.addListenerForSingleValueEvent(object: ValueEventListener {
+
+            override fun onDataChange(snapshot: DataSnapshot) {                      //todo registered check auf array umstellen
+                for (ds in snapshot.getChildren()) {
+                    if (ds.key == uid!!) {
+                        var checkReg = ds.child("reg_flag").getValue()
+                        if(checkReg !=true){
+                            button?.text = "Edit Profile"
+                            println("reg_flag doesn't exist so user is registered")
+                        }
+                        break
+                    }
+                }
+
+
+
+            }
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+
+        })
+
+    }
+
 
     //home button shown?
     private fun toBeOrNotToBe(button: Button) {
