@@ -38,6 +38,7 @@ android {
     }
 }
 
+
 // add here different frameworks you want to use
 dependencies {
     implementation 'androidx.core:core-ktx:1.7.0'
@@ -70,6 +71,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:19.2.0'
     implementation 'com.google.firebase:firebase-database:20.0.0'
     implementation 'com.google.firebase:firebase-storage:20.0.0'
+
+    //charts
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
     //Progress Dialog Library
     implementation 'com.jpardogo.googleprogressbar:library:1.2.0'

@@ -16,7 +16,6 @@ import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_calendar.*
 import kotlinx.android.synthetic.main.activity_calendar.drawerLayout
 import kotlinx.android.synthetic.main.activity_calendar.nav_view
-import kotlinx.android.synthetic.main.activity_main.*
 
 class CalendarActivity : AppCompatActivity() {
 
@@ -58,7 +57,7 @@ class CalendarActivity : AppCompatActivity() {
 
         val backButton = findViewById<Button>(R.id.btn_back)
         backButton.setOnClickListener{
-            val Intent = Intent(this,DashboardActivity::class.java)
+            val Intent = Intent(this,MainActivity::class.java)
             startActivity(Intent)
         }
 
@@ -74,7 +73,7 @@ class CalendarActivity : AppCompatActivity() {
         nav_view.bringToFront()
         nav_view.setNavigationItemSelectedListener {
             when (it.itemId) {
-                R.id.nav_home -> startActivity(Intent(this, DashboardActivity::class.java))
+                R.id.nav_home -> startActivity(Intent(this, MainActivity::class.java))
 
                 R.id.nav_logout -> {
                     auth = FirebaseAuth.getInstance()

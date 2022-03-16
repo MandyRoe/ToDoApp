@@ -3,23 +3,15 @@ package com.example.todoapp
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Paint.FAKE_BOLD_TEXT_FLAG
-import android.graphics.Paint.STRIKE_THRU_TEXT_FLAG
 // LayoutInflater converts our xml Layout into kotlin
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import com.google.protobuf.Value
-import kotlinx.android.synthetic.main.item_todo.view.*
-import kotlinx.android.synthetic.main.item_todo.view.cbDone
-import kotlinx.android.synthetic.main.item_user.view.*
-
 
 
 class AddFriendAdapter constructor(private val addFriendUserList : ArrayList<User>) : RecyclerView.Adapter<AddFriendAdapter.AddFriendViewHolder>() {
@@ -83,7 +75,7 @@ class AddFriendAdapter constructor(private val addFriendUserList : ArrayList<Use
                 })
 
 
-                val intent = Intent(context, DashboardActivity::class.java)
+                val intent = Intent(context, MainActivity::class.java)
 
                 startActivity(context, intent, null)
                 Toast.makeText(context, "Friend request sent to " + toName, Toast.LENGTH_SHORT).show()

@@ -17,7 +17,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.protobuf.Value
 import kotlinx.android.synthetic.main.item_todo.view.*
-import kotlinx.android.synthetic.main.item_todo.view.cbDone
+//import kotlinx.android.synthetic.main.item_todo.view.cbDone
 import kotlinx.android.synthetic.main.item_user.view.*
 
 

@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.activity_tododetails.*
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-class TodoDetailActivity : AppCompatActivity() {
+class AddTodoActivity : AppCompatActivity() {
 
     private lateinit var auth : FirebaseAuth
     private lateinit var databaseReference: DatabaseReference
@@ -26,11 +26,9 @@ class TodoDetailActivity : AppCompatActivity() {
         setContentView(R.layout.activity_tododetails)
 
 
-        //todo onclicklisteners erstellen und add todo data machen
 
         val btnCreateTodo = findViewById<Button>(R.id.btnCreateTodo)
         btnCreateTodo.setOnClickListener {
-            println("add pressed successfully")
 
             addTodoData()
             startActivity(Intent(this,ToDoActivity::class.java))
@@ -42,7 +40,7 @@ class TodoDetailActivity : AppCompatActivity() {
 
 
     }
-    //ads todo item to DB
+    //adds todo item to DB
     @RequiresApi(Build.VERSION_CODES.O)
     private fun addTodoData() {
         auth = FirebaseAuth.getInstance()
@@ -53,14 +51,12 @@ class TodoDetailActivity : AppCompatActivity() {
         val description = etDescription.text.toString()
         val dueDate = LocalDate.parse(etDueDate.text.toString()).toString()
         val createdDate = LocalDateTime.now().toString()
-        val todo = ToDo(todoTitle, description, uid, dueDate, createdDate)
+        val todo = ToDo(todoTitle, description, uid, false,"null", dueDate, createdDate)
 
-        databaseReference.child(todoTitle + uid).setValue(todo).addOnCompleteListener {
+        databaseReference.child(todoTitle + uid).setValue(todo)
 
 
-         //   todoArrayList.clear()   //if two items added array would still be full
 
-        }
     }
 
 

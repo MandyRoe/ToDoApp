@@ -5,7 +5,7 @@
     android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
+    tools:context=".MainActivity_not_used"
     android:background="@drawable/sec_background"
     android:fitsSystemWindows="true"
     tools:openDrawer="start">
