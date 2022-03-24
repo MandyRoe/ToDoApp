@@ -58,7 +58,7 @@ class ProfileActivity : AppCompatActivity() {
                     if (it.isSuccessful){
                         uploadProfilePic()
                         Toast.makeText(this@ProfileActivity, "Profile edit successful", Toast.LENGTH_SHORT).show()
-                        refreshView()
+
 
                     }else{
 
@@ -80,11 +80,6 @@ class ProfileActivity : AppCompatActivity() {
 
 
 
-    }
-    //checks if Profile information is submitted to create profile
-
-    private fun refreshView(){
-        startActivity(Intent(this, ProfileActivity::class.java))
     }
 
 

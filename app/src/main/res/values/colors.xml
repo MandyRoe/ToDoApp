@@ -16,6 +16,9 @@
     <color name="darker_blue">#4873a6</color>
     <color name="first_purple">#595386</color>
     <color name="sec_purple">#524364</color>
+    <color name="ter_purple">#524855</color>
+
+
 
     <!-- white colors -->
     <color name="whiteTextColor">#fff</color>

@@ -131,7 +131,7 @@ class FriendActivity : AppCompatActivity() {
                                 for (ds in snapshot.children) {
 
                                     if(ds.child("uid1").getValue().toString() == users?.uid || ds.child("uid2").getValue().toString() == users?.uid) {  //check for friendship
-                                                  //hier liegt der Hund begraben - alle User werden geadded
+
 
                                         friendsArrayList.add(users!!)
                                         friendRecyclerView.adapter = FriendAdapter(friendsArrayList)

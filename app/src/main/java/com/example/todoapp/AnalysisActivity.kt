@@ -1,6 +1,7 @@
 package com.example.todoapp
 
 import android.content.ContentValues.TAG
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -14,6 +15,7 @@ import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_analysis.*
+import kotlinx.android.synthetic.main.activity_main.*
 
 
 // Source: https://intensecoder.com/bar-chart-tutorial-in-android-using-kotlin/
@@ -28,6 +30,12 @@ class AnalysisActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_analysis)
         months = arrayOf<String>("","Jan","Feb", "Mar", "Apr", "May","Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+
+
+        analysis_back.setOnClickListener {
+            startActivity(Intent(this, ToDoActivity::class.java))
+        }
+
 
 
         val doneDates: ArrayList<String> = arrayListOf<String>()

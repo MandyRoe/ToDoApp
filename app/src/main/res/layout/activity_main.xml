@@ -95,17 +95,30 @@
         app:layout_constraintTop_toBottomOf="@+id/home_profile" />
 
     <Button
+        android:id="@+id/home_analysis"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="80dp"
+        android:layout_marginEnd="80dp"
+        android:text="Analysis"
+        android:backgroundTint="@color/sec_purple"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/home_change_pw" />
+
+    <Button
         android:id="@+id/home_logout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="80dp"
         android:layout_marginEnd="80dp"
         android:text="@string/dash_logout"
-        android:backgroundTint="@color/sec_purple"
+        android:backgroundTint="@color/ter_purple"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/home_change_pw" />
+        app:layout_constraintTop_toBottomOf="@+id/home_analysis" />
 
 
 

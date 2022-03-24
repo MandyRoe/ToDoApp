@@ -38,9 +38,16 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, ProfileActivity::class.java))
         }
 
+        home_analysis.setOnClickListener {
+            startActivity(Intent(this, AnalysisActivity::class.java))
+        }
+
         home_change_pw.setOnClickListener {
             startActivity(Intent(this, ResetPWActivity::class.java))
         }
+
+
+
 
 
         home_logout.setOnClickListener {
