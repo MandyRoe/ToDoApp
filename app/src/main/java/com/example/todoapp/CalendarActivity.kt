@@ -50,6 +50,7 @@ class CalendarActivity : AppCompatActivity() {
             Toast.makeText(this@CalendarActivity, "The selected date is $year.${month + 1}.$day", Toast.LENGTH_SHORT).show()
             readTodoDate(uid!!,year.toString(),ddMonth(month+1),ddDay(day))
             todoArrayList.clear()
+            todoRecyclerView.adapter?.notifyDataSetChanged()
 
         }
 
@@ -136,6 +137,7 @@ class CalendarActivity : AppCompatActivity() {
                         if (dDate == y +"-"+ m +"-"+ d){
                             todoArrayList.add(todo!!)                                            //arrayList with all the user owned todos in Database
                             todoRecyclerView.adapter = ToDoAdapter(dDate, cDate, todoArrayList)
+
 
                     }
                     }
