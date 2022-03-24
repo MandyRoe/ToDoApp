@@ -4,6 +4,7 @@ package com.example.todoapp
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.graphics.Paint.STRIKE_THRU_TEXT_FLAG
 import android.os.Build
 // LayoutInflater converts our xml Layout into kotlin
@@ -84,31 +85,6 @@ class ToDoAdapter(private val dueDate : String, private val createdDate : String
 
             }
 
-            btn_done.setOnClickListener{
-
-
-                auth = FirebaseAuth.getInstance()
-                var uid = auth.currentUser?.uid
-                val doneDate = LocalDateTime.now().toString()
-                databaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app").getReference("ToDo")
-                databaseReference.addListenerForSingleValueEvent(object: ValueEventListener {
-
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        for (ds in snapshot.children) {
-
-                            databaseReference.child(title.text.toString() + uid).child("done").setValue(true)
-                            databaseReference.child(title.text.toString() + uid).child("doneDate").setValue(doneDate)
-
-                        }
-                    }
-                    override fun onCancelled(error: DatabaseError) {
-                        //not needed
-                    }
-
-
-                })
-
-            }
 
         }
     }
@@ -130,44 +106,87 @@ class ToDoAdapter(private val dueDate : String, private val createdDate : String
     override fun onBindViewHolder(holder: TodoViewHolder, position: Int) {
         holder.bind(listData[position], position)
 
+         val currentItem = todoList[position]
 
-        /* val currentItem = todoList[position]
-         holder.title.text = currentItem.title
-         println(currentItem.title)
-         //fetched info
+
          holder.itemView.apply {
-             cbDone.isChecked = currentItem.check!!
-             toggleCheck(tvTodoTitle, currentItem.check!!, currentItem.title!!, currentItem.uid!!)
-             cbDone.setOnCheckedChangeListener { _, isChecked ->
-                 toggleCheck(tvTodoTitle, isChecked, currentItem.title!!, currentItem.uid!!)
-                 currentItem.check = !currentItem.check!!
+
+             //show status of already existing toDos
+             auth = FirebaseAuth.getInstance()
+             var uid = auth.currentUser?.uid
+             databaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app").getReference("ToDo")
+             databaseReference.addListenerForSingleValueEvent(object: ValueEventListener {
+
+                 override fun onDataChange(snapshot: DataSnapshot) {
+                     for (ds in snapshot.children) {
+
+                         println(ds.child("done"))
+                         if(ds.child("done").getValue() == true && ds.key == currentItem.title.toString() + uid ) {
+
+                             item_whole.setBackgroundColor(Color.parseColor("#41c9c5"))
+
+                         }
+                         else if (ds.child("done").getValue() == false && ds.key == currentItem.title.toString() + uid ) {
+
+                             item_whole.setBackgroundColor(Color.parseColor("#ffffff"))
+
+                         }
+                     }
+                 }
+                 override fun onCancelled(error: DatabaseError) {
+                     //not needed
+                 }
+
+
+             })
+
+
+            //update status on todos with click on check button
+             btn_done_todo.setOnClickListener {
+
+                 auth = FirebaseAuth.getInstance()
+                 var uid = auth.currentUser?.uid
+                 val doneDate = LocalDateTime.now().toString()
+                 databaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app").getReference("ToDo")
+                 databaseReference.addListenerForSingleValueEvent(object: ValueEventListener {
+
+                     override fun onDataChange(snapshot: DataSnapshot) {
+                         for (ds in snapshot.children) {
+
+                                    println(ds.child("done"))
+                                    if(ds.child("done").getValue() == false && ds.key == currentItem.title.toString() + uid ) {
+                                        databaseReference.child(currentItem.title.toString() + uid).child("done").setValue(true)
+                                        databaseReference.child(currentItem.title.toString() + uid).child("doneDate").setValue(doneDate)
+                                        item_whole.setBackgroundColor(Color.parseColor("#41c9c5"))
+                                        println(ds.child(currentItem.title.toString() + uid).child("done").getValue().toString()
+                                        )
+                                    }
+                              else if (ds.child("done").getValue() == true && ds.key == currentItem.title.toString() + uid ) {
+                                 databaseReference.child(currentItem.title.toString() + uid).child("done").setValue(false)
+                                 databaseReference.child(currentItem.title.toString() + uid).child("doneDate").setValue("null")
+                                 item_whole.setBackgroundColor(Color.parseColor("#ffffff"))
+
+                             }
+                         }
+                     }
+                     override fun onCancelled(error: DatabaseError) {
+                         //not needed
+                     }
+
+
+                 })
+
+
+
+
+                 }
              }
-         }*/
 
     }
 
     fun deleteItem(index: Int){
         listData.removeAt(index)
         notifyDataSetChanged()
-    }
-
-
-
-    // checked or unchecked items. based on binary (paintFlags)
-    private fun toggleCheck(tvToDoTitle: TextView, isChecked: Boolean, todoTitle : String, uid:String) {
-        auth = FirebaseAuth.getInstance()
-
-        if(isChecked == true) {
-
-            tvToDoTitle.paintFlags = tvToDoTitle.paintFlags or STRIKE_THRU_TEXT_FLAG
-            selectedTodo = todoTitle + uid
-            println("*******" + selectedTodo + "is selected todo")
-
-
-        } else {
-            tvToDoTitle.paintFlags = tvToDoTitle.paintFlags and STRIKE_THRU_TEXT_FLAG.inv()
-
-        }
     }
 
 

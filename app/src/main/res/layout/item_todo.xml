@@ -15,8 +15,10 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="121dp"
-        android:id="@+id/item_whole">
+        android:layout_height="wrap_content"
+        android:id="@+id/item_whole"
+        android:background="@color/white">
+
 
         <TextView
             android:id="@+id/tvTodoTitle"
@@ -41,8 +43,8 @@
             android:layout_marginRight="5dp"
             android:background="@drawable/delete_icon"
             app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvDescription"
             app:layout_constraintWidth_percent=".1" />
 
         <Button
@@ -61,6 +63,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
             android:text="Description"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
