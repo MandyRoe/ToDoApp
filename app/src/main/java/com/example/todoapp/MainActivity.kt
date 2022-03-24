@@ -74,7 +74,7 @@ class MainActivity : AppCompatActivity() {
                         sendToProfile()
 
                     } else if(checkReg == null){
-                        println("reg_flag doesnt exist so user is registered")
+
                     }
 
                 }
