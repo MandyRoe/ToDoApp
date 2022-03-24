@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_main.view.*
 import kotlinx.android.synthetic.main.item_todo.view.*
 import java.time.LocalDateTime
 
@@ -49,7 +50,7 @@ class ToDoAdapter(private val dueDate : String, private val createdDate : String
 
             val btn_delete = itemView.findViewById<Button>(R.id.btn_delete_todo)
             val btn_share = itemView.findViewById<Button>(R.id.btn_share_todo)
-            val btn_done = itemView.findViewById<Button>(R.id.btn_done_todo)
+
 
 
 
@@ -57,8 +58,7 @@ class ToDoAdapter(private val dueDate : String, private val createdDate : String
             context = super.itemView.context             //context for start activity intent
             title.text = todo.title
             description.text = todo.description
-           // dueDate = todo.dueDate
-           // createdDate = todo.createdDate
+
 
 
 
@@ -158,14 +158,14 @@ class ToDoAdapter(private val dueDate : String, private val createdDate : String
                                         databaseReference.child(currentItem.title.toString() + uid).child("done").setValue(true)
                                         databaseReference.child(currentItem.title.toString() + uid).child("doneDate").setValue(doneDate)
                                         item_whole.setBackgroundColor(Color.parseColor("#41c9c5"))
-                                        println(ds.child(currentItem.title.toString() + uid).child("done").getValue().toString()
-                                        )
-                                    }
-                              else if (ds.child("done").getValue() == true && ds.key == currentItem.title.toString() + uid ) {
-                                 databaseReference.child(currentItem.title.toString() + uid).child("done").setValue(false)
-                                 databaseReference.child(currentItem.title.toString() + uid).child("doneDate").setValue("null")
-                                 item_whole.setBackgroundColor(Color.parseColor("#ffffff"))
+                                        btn_done_todo.setBackgroundResource(R.drawable.undo_icon)
 
+                                    }
+                                     else if (ds.child("done").getValue() == true && ds.key == currentItem.title.toString() + uid ) {
+                                      databaseReference.child(currentItem.title.toString() + uid).child("done").setValue(false)
+                                       databaseReference.child(currentItem.title.toString() + uid).child("doneDate").setValue("null")
+                                       item_whole.setBackgroundColor(Color.parseColor("#ffffff"))
+                                        btn_done_todo.setBackgroundResource(R.drawable.check_icon)
                              }
                          }
                      }
