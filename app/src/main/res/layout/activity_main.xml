@@ -5,8 +5,8 @@
     android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity_not_used"
-    android:background="@drawable/sec_background"
+    tools:context=".MainActivity"
+
     android:fitsSystemWindows="true"
     tools:openDrawer="start">
 
@@ -15,10 +15,10 @@
         android:layout_height="match_parent"
         android:layout_marginTop="70dp"
         android:id="@+id/nav_view"
-        app:headerLayout="@layout/header"
+        app:headerLayout="@layout/nav_header"
         app:menu="@menu/main_menu"
         android:layout_gravity="start"
-        android:background="@drawable/sec_background"
+
         android:fitsSystemWindows="true"/>
 
 
@@ -26,8 +26,6 @@
 
 
 <androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/sec_background"
