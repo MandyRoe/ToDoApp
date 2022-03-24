@@ -117,24 +117,25 @@ class FriendActivity : AppCompatActivity() {
 
         databaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app").getReference("Users")
         val dbr2 : DatabaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app").getReference("Friendships")
-        databaseReference.addListenerForSingleValueEvent(object: ValueEventListener {   //addValueEventListener loops infinite
+        databaseReference.addListenerForSingleValueEvent(object: ValueEventListener {
 
             override fun onDataChange(snapshot: DataSnapshot) {
 
                 for (uS in snapshot.children) {
 
-                    val users = uS.getValue(User::class.java)
-
                     if(uS.key != uid ) {                              //only show other users
-
+                        val users = uS.getValue(User::class.java)
                         dbr2.addListenerForSingleValueEvent(object: ValueEventListener {
 
                             override fun onDataChange(snapshot: DataSnapshot)  {
                                 for (ds in snapshot.children) {
 
-                                    if(ds.child("uid1").getValue().toString() == uid || ds.child("uid2").getValue().toString() == uid) {  //check for friendship
+                                    if(ds.child("uid1").getValue().toString() == users?.uid || ds.child("uid2").getValue().toString() == users?.uid) {  //check for friendship
+                                                  //hier liegt der Hund begraben - alle User werden geadded
+
                                         friendsArrayList.add(users!!)
                                         friendRecyclerView.adapter = FriendAdapter(friendsArrayList)
+
 
                                     }
                                 }

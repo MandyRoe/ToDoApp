@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.github.mikephil.charting.components.AxisBase
+import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
@@ -15,19 +16,21 @@ import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_analysis.*
 
 
+// Source: https://intensecoder.com/bar-chart-tutorial-in-android-using-kotlin/
+
 class AnalysisActivity : AppCompatActivity() {
 
     private lateinit var databaseReference: DatabaseReference
     private var auth : FirebaseAuth = FirebaseAuth.getInstance()
-   // private lateinit var doneList: ArrayList<String>
+    private lateinit var months: Array<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_analysis)
-       // doneList = arrayListOf<String>()
+        months = arrayOf<String>("","Jan","Feb", "Mar", "Apr", "May","Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
 
 
-        val a: ArrayList<String> = arrayListOf<String>()
+        val doneDates: ArrayList<String> = arrayListOf<String>()
         val uid = auth.currentUser?.uid
         databaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app").getReference("ToDo")
         databaseReference.addListenerForSingleValueEvent(object: ValueEventListener {
@@ -40,7 +43,7 @@ class AnalysisActivity : AppCompatActivity() {
 
                         if(todoSnapshot.child("done").getValue() ==true){
                             val doneDate = todoSnapshot.child("doneDate").getValue().toString()
-                            a.add(doneDate)
+                            doneDates.add(doneDate)
 
                         }
                     }
@@ -51,8 +54,8 @@ class AnalysisActivity : AppCompatActivity() {
                 var doneJAN = 0; var doneFEB = 0; var doneMAR = 0; var doneAPR = 0; var doneMAY = 0; var doneJUN = 0;
                 var doneJUL = 0; var doneAUG = 0; var doneSEP = 0; var doneOCT = 0; var doneNOV = 0; var doneDEC = 0;
 
-                for (i in a.indices) {
-                    when(a[i].get(5) + "" + a[i].get(6)){
+                for (i in doneDates.indices) {
+                    when(doneDates[i].get(5) + "" + doneDates[i].get(6)){
                         "01" -> doneJAN++
                         "02" -> doneFEB++
                         "03" -> doneMAR++
@@ -67,7 +70,7 @@ class AnalysisActivity : AppCompatActivity() {
                         "12" -> doneDEC++
 
                     }
-                    println(a[i])
+                    println(doneDates[i])
                 }
                 entries.add(BarEntry(1f, doneJAN.toFloat()))
                 entries.add(BarEntry(2f, doneFEB.toFloat()))
@@ -95,11 +98,12 @@ class AnalysisActivity : AppCompatActivity() {
                 barChart.xAxis.setDrawGridLines(false)
                 barChart.xAxis.setDrawAxisLine(false)
 
-                //remove right y-axis
+                //remove  y-axis
                 barChart.axisRight.isEnabled = false
+                barChart.axisLeft.isEnabled = false
 
                 //remove legend
-                barChart.legend.isEnabled = true
+                barChart.legend.isEnabled = false
 
 
                 //remove description label
@@ -109,10 +113,14 @@ class AnalysisActivity : AppCompatActivity() {
                 //add animation
                 barChart.animateY(1500)
 
+                // barCHart labeling
+                barChart.xAxis.position = XAxis.XAxisPosition.BOTTOM_INSIDE
+                barChart.setDrawValueAboveBar(true)
+                //barChart.xAxis.labelRotationAngle = +90f
                 barChart.xAxis.granularity = 1f
                 barChart.xAxis.setDrawLabels(true)
-                barChart.xAxis.labelRotationAngle = +90f
-                barChart.xAxis.labelCount
+                barChart.xAxis.valueFormatter = MyAxisFormatter()
+                barChart.xAxis.setLabelCount(12, false)
 
                 //draw chart
                 barChart.invalidate()
@@ -126,121 +134,21 @@ class AnalysisActivity : AppCompatActivity() {
             }
         })
 
-                                                            //https://intensecoder.com/bar-chart-tutorial-in-android-using-kotlin/
+
     }
 
+    //value formatter necessary for custom labes on xAxis
+    inner class MyAxisFormatter : IndexAxisValueFormatter() {
 
-/*
-    private fun setBarChart() {
-
-        val entries: ArrayList<BarEntry> = ArrayList()
-        entries.add(BarEntry(1f, 4f))
-        entries.add(BarEntry(2f, 10f))
-        entries.add(BarEntry(3f, 2f))
-        entries.add(BarEntry(4f, 15f))
-        entries.add(BarEntry(5f, 13f))
-        entries.add(BarEntry(6f, 2f))
-
-        val barDataSet = BarDataSet(entries, "")
-        barDataSet.setColors(*ColorTemplate.COLORFUL_COLORS)
-
-        val data = BarData(barDataSet)
-        barChart.data = data
-
-
-        //hide grid lines
-        barChart.axisLeft.setDrawGridLines(false)
-        barChart.xAxis.setDrawGridLines(false)
-        barChart.xAxis.setDrawAxisLine(false)
-
-        //remove right y-axis
-        barChart.axisRight.isEnabled = false
-
-        //remove legend
-        barChart.legend.isEnabled = false
-
-
-        //remove description label
-        barChart.description.isEnabled = false
-
-
-        //add animation
-        barChart.animateY(1500)
-
-
-        //draw chart
-        barChart.invalidate()
-    }
-
-
-    private fun dynamicBarChart() {
-
-        val entries: ArrayList<BarEntry> = ArrayList()
-        for (i in a.indices) {
-                val done = a[i]
-                entries.add(BarEntry(i.toFloat(), done.toFloat()))
+        override fun getAxisLabel(value: Float, axis: AxisBase?): String {
+            val index = value.toInt()
+            Log.d(TAG, "getAxisLabel: index $index")
+            return if (index < months.size) {
+                months[index]
+            } else {
+                ""
             }
-
-        val barDataSet = BarDataSet(entries, "")
-        barDataSet.setColors(*ColorTemplate.COLORFUL_COLORS)
-
-        val data = BarData(barDataSet)
-        barChart.data = data
-
-
-        //hide grid lines
-        barChart.axisLeft.setDrawGridLines(false)
-        barChart.xAxis.setDrawGridLines(false)
-        barChart.xAxis.setDrawAxisLine(false)
-
-        //remove right y-axis
-        barChart.axisRight.isEnabled = false
-
-        //remove legend
-        barChart.legend.isEnabled = false
-
-
-        //remove description label
-        barChart.description.isEnabled = false
-
-
-        //add animation
-        barChart.animateY(1500)
-
-
-        //draw chart
-        barChart.invalidate()
+        }
     }
 
-
-    //create Array List of done dates for dynamic Bar Chart
-    private fun getDoneList(){
-        val a: ArrayList<String> = arrayListOf<String>()
-        val uid = auth.currentUser?.uid
-        databaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app").getReference("ToDo")
-        databaseReference.addListenerForSingleValueEvent(object: ValueEventListener {
-
-            override fun onDataChange(snapshot: DataSnapshot) {
-
-                for (todoSnapshot in snapshot.children) {
-
-                    if (todoSnapshot.key!!.contains(uid!!)) {
-
-                        if(todoSnapshot.child("done").getValue() ==true){
-                            val doneDate = todoSnapshot.child("doneDate").getValue().toString()
-                            a.add(doneDate)
-
-                        }
-                    }
-                }
-                    println(a)
-
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-            }
-        })
-
-    }
-*/
 }
