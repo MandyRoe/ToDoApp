@@ -71,7 +71,7 @@ class ProfileActivity : AppCompatActivity() {
 
         }
         val homeButton = findViewById<Button>(R.id.homeBtn)
-        toBeOrNotToBe(homeButton)
+
         homeButton.setOnClickListener{
             val intent = Intent(this,MainActivity::class.java)
             startActivity(intent)
@@ -161,34 +161,6 @@ class ProfileActivity : AppCompatActivity() {
     }
 
 
-    //home button shown?
-    private fun toBeOrNotToBe(button: Button) {
-        databaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Users")
-        databaseReference.addListenerForSingleValueEvent(object: ValueEventListener {
-
-            override fun onDataChange(snapshot: DataSnapshot) {
-                for (ds in snapshot.getChildren()) {
-                    var checkReg = ds.child("reg_flag").getValue()
-
-                    if(checkReg ==true){
-                        button.isEnabled = false
-                        button.isVisible = false
-
-
-                    } else if(checkReg == null){
-
-                    }
-
-                }
-            }
-            override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
-            }
-
-
-        })
-
-    }
 
     private fun uploadProfilePic() {
 

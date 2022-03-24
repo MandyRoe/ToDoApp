@@ -120,7 +120,6 @@ class ToDoAdapter(private val dueDate : String, private val createdDate : String
                  override fun onDataChange(snapshot: DataSnapshot) {
                      for (ds in snapshot.children) {
 
-                         println(ds.child("done"))
                          if(ds.child("done").getValue() == true && ds.key == currentItem.title.toString() + uid ) {
 
                              item_whole.setBackgroundColor(Color.parseColor("#41c9c5"))

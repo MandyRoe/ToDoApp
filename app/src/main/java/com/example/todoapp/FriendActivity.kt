@@ -41,7 +41,7 @@ class FriendActivity : AppCompatActivity() {
         friendsArrayList = arrayListOf<User>()
 
         val uid = auth.currentUser?.uid
-       // val title = intent.getStringExtra("title").toString()
+        // val title = intent.getStringExtra("title").toString()
 
 
         readFriends(uid!!)
@@ -60,7 +60,7 @@ class FriendActivity : AppCompatActivity() {
         btnFriendRequests.setOnClickListener {
             println("button pressed successfully")
 
-           startActivity(Intent(this, FriendRequestsActivity::class.java))
+            startActivity(Intent(this, FriendRequestsActivity::class.java))
 
 
         }
@@ -93,12 +93,6 @@ class FriendActivity : AppCompatActivity() {
                 R.id.nav_friends -> startActivity(Intent(this, FriendActivity::class.java))
 
 
-                R.id.nav_calendar -> startActivity(
-                    Intent(
-                        this,
-                        CalendarActivity::class.java
-                    )
-                )
 
             }
             true
@@ -106,7 +100,7 @@ class FriendActivity : AppCompatActivity() {
 
     } //onCreate end
 
-     //functions
+    //functions
 
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -178,6 +172,3 @@ class FriendActivity : AppCompatActivity() {
 
 
 }
-
-
-
