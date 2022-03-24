@@ -100,7 +100,6 @@ class FriendActivity : AppCompatActivity() {
                     )
                 )
 
-
             }
             true
         }

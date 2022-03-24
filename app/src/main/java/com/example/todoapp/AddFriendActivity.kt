@@ -44,20 +44,35 @@ class AddFriendActivity : AppCompatActivity()  {
     private fun readUsers(uid: String) {
 
         databaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app").getReference("Users")
-        databaseReference.addListenerForSingleValueEvent(object: ValueEventListener {   //addValueEventListener loops infinite
+        val dbr2 : DatabaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app").getReference("Friendships")
+        databaseReference.addListenerForSingleValueEvent(object: ValueEventListener {
 
             override fun onDataChange(snapshot: DataSnapshot) {
 
-                for (usersSnapshot in snapshot.children) {
+                for (uS in snapshot.children) {
 
-                   // if () {             //ToDo: filter Users by friend status
-                        val users = usersSnapshot.getValue(User::class.java)
+                    if(uS.key != uid ) {                              //only show other users
+                        val users = uS.getValue(User::class.java)
+                        dbr2.addListenerForSingleValueEvent(object: ValueEventListener {
 
-                        if(usersSnapshot.key != uid) {                              //only show other users
-                            addFriendArrayList.add(users!!)                              //arrayList with all the users in Database
-                            friendRecyclerView.adapter = AddFriendAdapter(addFriendArrayList)
-                        }
-                    //}
+                            override fun onDataChange(snapshot: DataSnapshot)  {
+                                for (ds in snapshot.children) {
+
+                                    if(ds.child("uid1").getValue().toString() != users?.uid && ds.child("uid2").getValue().toString() != users?.uid) {  //check for friendship
+
+                                        addFriendArrayList.add(users!!)                              //arrayList with all the users in Database
+                                        friendRecyclerView.adapter = AddFriendAdapter(addFriendArrayList)
+
+                                    }
+                                }
+                            }
+                            override fun onCancelled(error: DatabaseError) {
+                                TODO("Not yet implemented")
+                            }
+
+                        })
+
+                    }
 
                 }
             }
@@ -67,6 +82,7 @@ class AddFriendActivity : AppCompatActivity()  {
         })
 
     }
+
 
 
 }
