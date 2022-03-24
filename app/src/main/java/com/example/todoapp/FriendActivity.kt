@@ -93,7 +93,7 @@ class FriendActivity : AppCompatActivity() {
                 R.id.nav_friends -> startActivity(Intent(this, FriendActivity::class.java))
 
 
-                R.id.nav_test_change_activity -> startActivity(
+                R.id.nav_calendar -> startActivity(
                     Intent(
                         this,
                         CalendarActivity::class.java

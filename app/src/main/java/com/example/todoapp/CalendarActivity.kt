@@ -89,7 +89,7 @@ class CalendarActivity : AppCompatActivity() {
 
                 R.id.nav_friends -> Toast.makeText(applicationContext, "Clicked friends", Toast.LENGTH_SHORT).show()
 
-                R.id.nav_test_change_activity -> startActivity(
+                R.id.nav_calendar-> startActivity(
                     Intent(
                         this,
                         CalendarActivity::class.java
