@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import kotlinx.android.synthetic.main.activity_tododetails.*
+import kotlinx.android.synthetic.main.activity_addtodo.*
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -23,7 +23,7 @@ class AddTodoActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_tododetails)
+        setContentView(R.layout.activity_addtodo)
 
 
 

@@ -50,6 +50,7 @@ class ToDoAdapter(private val dueDate : String, private val createdDate : String
 
             val btn_delete = itemView.findViewById<Button>(R.id.btn_delete_todo)
             val btn_share = itemView.findViewById<Button>(R.id.btn_share_todo)
+            val btn_edit = itemView.findViewById<Button>(R.id.btn_edit_todo)
 
 
 
@@ -85,6 +86,20 @@ class ToDoAdapter(private val dueDate : String, private val createdDate : String
 
             }
 
+            btn_edit.setOnClickListener {
+                // currentItem.
+                val intent = Intent(context, EditTodoActivity::class.java).apply{
+                    putExtra("title", title.text.toString() )
+                    putExtra("description", description.text.toString())
+                    putExtra("dueDate", dueDate)
+                    putExtra("createdDate", createdDate)
+
+                }
+                startActivity(context, intent, null)
+
+            }
+
+
 
         }
     }
@@ -110,6 +125,9 @@ class ToDoAdapter(private val dueDate : String, private val createdDate : String
 
 
          holder.itemView.apply {
+
+
+
 
              //show status of already existing toDos
              auth = FirebaseAuth.getInstance()

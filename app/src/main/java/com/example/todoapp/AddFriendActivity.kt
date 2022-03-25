@@ -51,28 +51,11 @@ class AddFriendActivity : AppCompatActivity()  {
 
                 for (uS in snapshot.children) {
 
-                    if(uS.key != uid ) {                              //only show other users
-                        val users = uS.getValue(User::class.java)
-                        dbr2.addListenerForSingleValueEvent(object: ValueEventListener {
-
-                            override fun onDataChange(snapshot: DataSnapshot)  {
-                                for (ds in snapshot.children) {
-
-                                    if(ds.child("uid1").getValue().toString() != users?.uid && ds.child("uid2").getValue().toString() != users?.uid) {  //check for friendship
-
-                                        addFriendArrayList.add(users!!)                              //arrayList with all the users in Database
-                                        friendRecyclerView.adapter = AddFriendAdapter(addFriendArrayList)
-
-                                    }
-                                }
-                            }
-                            override fun onCancelled(error: DatabaseError) {
-                                TODO("Not yet implemented")
-                            }
-
-                        })
-
-                    }
+                if(uS.key != uid){
+                    val user = uS.getValue(User::class.java)
+                    addFriendArrayList.add(user!!)
+                    friendRecyclerView.adapter = AddFriendAdapter(addFriendArrayList)
+                }
 
                 }
             }

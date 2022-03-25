@@ -45,6 +45,9 @@
         <activity
             android:name=".AnalysisActivity"
             android:exported="false" />
+        <activity
+            android:name=".EditTodoActivity"
+            android:exported="false" />
 
 
         <activity
