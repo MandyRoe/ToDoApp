@@ -108,25 +108,49 @@ class FriendActivity : AppCompatActivity() {
 
     private fun readFriends(uid: String) {
 
-        databaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app").getReference("Users")
-        val dbr2 : DatabaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app").getReference("Friendships")
+        databaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app").getReference("Friendships")
+        val dbr2 : DatabaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app").getReference("Users")
         databaseReference.addListenerForSingleValueEvent(object: ValueEventListener {
 
             override fun onDataChange(snapshot: DataSnapshot) {
 
-                for (uS in snapshot.children) {
+                for (friendSnapshot in snapshot.children) {
 
-                    if(uS.key != uid ) {                              //only show other users
-                        val users = uS.getValue(User::class.java)
-                        dbr2.addListenerForSingleValueEvent(object: ValueEventListener {
+                    if(friendSnapshot.key?.contains(uid)!!) {                //look for my uid in friendships
+                        if(friendSnapshot.child("uid1").toString() == uid){            //    if uid1 = my dann uid2 ins array
+
+                            dbr2.addListenerForSingleValueEvent(object: ValueEventListener {
+
+                                override fun onDataChange(snapshot: DataSnapshot)  {
+
+                                    for (userSnapshot in snapshot.children) {         //get user from uid2
+
+                                        if(friendSnapshot.child("uid2").getValue() == userSnapshot.key) {
+                                            val user = userSnapshot.getValue(User::class.java)
+
+                                            friendsArrayList.add(user!!)
+                                            friendRecyclerView.adapter = FriendAdapter(friendsArrayList)
+
+
+                                        }
+                                    }
+                                }
+                                override fun onCancelled(error: DatabaseError) {
+                                    TODO("Not yet implemented")
+                                }
+
+                            })
+
+                        } else { dbr2.addListenerForSingleValueEvent(object: ValueEventListener {
 
                             override fun onDataChange(snapshot: DataSnapshot)  {
-                                for (ds in snapshot.children) {
 
-                                    if(ds.child("uid1").getValue().toString() == users?.uid || ds.child("uid2").getValue().toString() == users?.uid) {  //check for friendship
+                                for (userSnapshot in snapshot.children) {         //get user from uid2
 
+                                    if(friendSnapshot.child("uid1").getValue() == userSnapshot.key) {
+                                        val user = userSnapshot.getValue(User::class.java)
 
-                                        friendsArrayList.add(users!!)
+                                        friendsArrayList.add(user!!)
                                         friendRecyclerView.adapter = FriendAdapter(friendsArrayList)
 
 
@@ -138,6 +162,13 @@ class FriendActivity : AppCompatActivity() {
                             }
 
                         })
+
+
+
+
+
+                        } //else end
+
 
                     }
 
