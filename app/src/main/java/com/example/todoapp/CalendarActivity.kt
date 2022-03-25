@@ -47,7 +47,7 @@ class CalendarActivity : AppCompatActivity() {
 
         // _: it is calendar instance. year: it’s selected year. month: it’s selected month. day: and It’s selected day.
         calendarView.setOnDateChangeListener { _, year, month, day ->
-            Toast.makeText(this@CalendarActivity, "The selected date is $year.${month + 1}.$day", Toast.LENGTH_SHORT).show()
+
             readTodoDate(uid!!,year.toString(),ddMonth(month+1),ddDay(day))
             todoArrayList.clear()
             todoRecyclerView.adapter?.notifyDataSetChanged()
@@ -132,8 +132,7 @@ class CalendarActivity : AppCompatActivity() {
                         val todo = todoSnapshot.getValue(ToDo::class.java)
                         val cDate = todoSnapshot.child("createdDate").getValue().toString()
                         val dDate = todoSnapshot.child("dueDate").getValue().toString()
-                        println("due Date " + dDate)
-                        println("********selected date" + y +"-"+ m +"-"+ d)
+
                         if (dDate == y +"-"+ m +"-"+ d){
                             todoArrayList.add(todo!!)                                            //arrayList with all the user owned todos in Database
                             todoRecyclerView.adapter = ToDoAdapter(dDate, cDate, todoArrayList)
