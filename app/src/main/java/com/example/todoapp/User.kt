@@ -1,6 +1,9 @@
 package com.example.todoapp
 
-import com.google.firebase.database.*
+
+/**
+ * class for User object
+ **/
 
 
 class User(

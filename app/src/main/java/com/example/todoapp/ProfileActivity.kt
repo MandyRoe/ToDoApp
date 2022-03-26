@@ -15,6 +15,9 @@ import androidx.core.view.isVisible
 import com.google.firebase.database.*
 import com.google.firebase.storage.StorageReference
 
+/**
+ * Activity to enter new and receive existing profile information from and to database
+ **/
 
 class ProfileActivity : AppCompatActivity() {
 
@@ -53,8 +56,9 @@ class ProfileActivity : AppCompatActivity() {
 
             val user = User(uid, firstNameText, lastNameText, bioText)
             if(uid != null){
+                //post user data to database
                 databaseReference.child(uid).setValue(user).addOnCompleteListener {
-
+                    //beginning of editable profile picture tries
                     if (it.isSuccessful){
                         uploadProfilePic()
                         Toast.makeText(this@ProfileActivity, "Profile edit successful", Toast.LENGTH_SHORT).show()
@@ -83,7 +87,7 @@ class ProfileActivity : AppCompatActivity() {
     }
 
 
-    //load existing text for user from db
+    //load existing text for user from database
     private fun showProfile(uid : String) {
         databaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Users")
         databaseReference.addListenerForSingleValueEvent(object: ValueEventListener {
@@ -128,7 +132,7 @@ class ProfileActivity : AppCompatActivity() {
 
     }
 
-    //check if profile exists for create or change button
+    //check if profile exists for text change on button text
     private fun createOrEdit(button: Button) {
         auth = FirebaseAuth.getInstance()
         val uid = auth.currentUser?.uid
@@ -142,7 +146,7 @@ class ProfileActivity : AppCompatActivity() {
                         var checkReg = ds.child("reg_flag").getValue()
                         if(checkReg !=true){
                             button?.text = "Edit Profile"
-                            println("reg_flag doesn't exist so user is registered")
+
                         }
                         break
                     }
@@ -161,14 +165,13 @@ class ProfileActivity : AppCompatActivity() {
     }
 
 
-
+    //beginning of editable profile picture tries
     private fun uploadProfilePic() {
 
         imageUri = Uri.parse("android.resource://$packageName/${R.drawable.profile}")
         storageReference = FirebaseStorage.getInstance("gs://todoapp-ca2d3.appspot.com").getReference("Users/"+auth.currentUser?.uid)
         storageReference.putFile(imageUri)
 
-        println("picture uplaoded")
 
 
     }

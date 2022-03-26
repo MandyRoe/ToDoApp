@@ -17,8 +17,10 @@ import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_analysis.*
 import kotlinx.android.synthetic.main.activity_main.*
 
+/**
+ * Activity to fetch done todos from database and display them in bar chart
+ **/
 
-// Source: https://intensecoder.com/bar-chart-tutorial-in-android-using-kotlin/
 
 class AnalysisActivity : AppCompatActivity() {
 
@@ -29,9 +31,12 @@ class AnalysisActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_analysis)
+
+        //create array for x axis labels
         months = arrayOf<String>("","Jan","Feb", "Mar", "Apr", "May","Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
 
 
+        //back button funcionality
         analysis_back.setOnClickListener {
             startActivity(Intent(this, ToDoActivity::class.java))
         }
@@ -45,24 +50,30 @@ class AnalysisActivity : AppCompatActivity() {
 
             override fun onDataChange(snapshot: DataSnapshot) {
 
+                //loops through todos in database
                 for (todoSnapshot in snapshot.children) {
 
-                    if (todoSnapshot.key!!.contains(uid!!)) {
+                    //checks if user owns the todo item and if item is done
+                    if (todoSnapshot.key!!.contains(uid!!) && todoSnapshot.child("done").getValue() ==true ) {
 
-                        if(todoSnapshot.child("done").getValue() ==true){
+                            //fetch done date of todo item
                             val doneDate = todoSnapshot.child("doneDate").getValue().toString()
+                            //add to array
                             doneDates.add(doneDate)
 
-                        }
+
                     }
                 }
 
-
+                //actual bar data
                 val entries: ArrayList<BarEntry> = ArrayList()
                 var doneJAN = 0; var doneFEB = 0; var doneMAR = 0; var doneAPR = 0; var doneMAY = 0; var doneJUN = 0;
                 var doneJUL = 0; var doneAUG = 0; var doneSEP = 0; var doneOCT = 0; var doneNOV = 0; var doneDEC = 0;
 
+                //go through done dates
                 for (i in doneDates.indices) {
+                    //read the string on the month position
+                        //todo: also account for year
                     when(doneDates[i].get(5) + "" + doneDates[i].get(6)){
                         "01" -> doneJAN++
                         "02" -> doneFEB++
@@ -78,8 +89,8 @@ class AnalysisActivity : AppCompatActivity() {
                         "12" -> doneDEC++
 
                     }
-                    println(doneDates[i])
                 }
+                //post data to chart
                 entries.add(BarEntry(1f, doneJAN.toFloat()))
                 entries.add(BarEntry(2f, doneFEB.toFloat()))
                 entries.add(BarEntry(3f, doneMAR.toFloat()))
@@ -94,12 +105,16 @@ class AnalysisActivity : AppCompatActivity() {
                 entries.add(BarEntry(12f, doneDEC.toFloat()))
 
                 val barDataSet = BarDataSet(entries, "")
-                barDataSet.setColors(*ColorTemplate.COLORFUL_COLORS)
+
+
+
 
 
                 val data = BarData(barDataSet)
                 barChart.data = data
 
+                //easy bar color implementation for easier readability
+                barDataSet.setColors(*ColorTemplate.COLORFUL_COLORS)
 
                 //hide grid lines
                 barChart.axisLeft.setDrawGridLines(false)
@@ -124,7 +139,6 @@ class AnalysisActivity : AppCompatActivity() {
                 // barCHart labeling
                 barChart.xAxis.position = XAxis.XAxisPosition.BOTTOM_INSIDE
                 barChart.setDrawValueAboveBar(true)
-                //barChart.xAxis.labelRotationAngle = +90f
                 barChart.xAxis.granularity = 1f
                 barChart.xAxis.setDrawLabels(true)
                 barChart.xAxis.valueFormatter = MyAxisFormatter()

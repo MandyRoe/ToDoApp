@@ -1,8 +1,12 @@
 package com.example.todoapp
 
-import android.widget.EditText
-import android.widget.TextView
 import com.google.firebase.database.*
+
+/**
+ * class for Friendship object
+ * unfortunately we weren't able to implement everything so nicely. dirty was faster
+ **/
+
 
 
 class Friendship(

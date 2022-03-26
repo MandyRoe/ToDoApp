@@ -16,6 +16,13 @@ import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_calendar.*
 import kotlinx.android.synthetic.main.activity_calendar.drawerLayout
 import kotlinx.android.synthetic.main.activity_calendar.nav_view
+import kotlinx.android.synthetic.main.activity_main.*
+
+/**
+ * Activity to display calendar and show todo items in recylcer view according to due date
+ **/
+
+
 
 class CalendarActivity : AppCompatActivity() {
 
@@ -55,7 +62,7 @@ class CalendarActivity : AppCompatActivity() {
         }
 
 
-
+        //back button functionality
         val backButton = findViewById<Button>(R.id.btn_back)
         backButton.setOnClickListener{
             val Intent = Intent(this,MainActivity::class.java)
@@ -70,7 +77,7 @@ class CalendarActivity : AppCompatActivity() {
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        //nav items functionality
+        //nav items functionality - if item is clicked start corresponding activity
         nav_view.bringToFront()
         nav_view.setNavigationItemSelectedListener {
             when (it.itemId) {
@@ -85,16 +92,17 @@ class CalendarActivity : AppCompatActivity() {
                 }
                 R.id.nav_profile -> startActivity(Intent(this, ProfileActivity::class.java))
 
-                R.id.nav_friends -> startActivity(Intent(this, SelectUsersActivity::class.java))
+                R.id.nav_friends -> startActivity(Intent(this, FriendActivity::class.java))
 
-                R.id.nav_friends -> Toast.makeText(applicationContext, "Clicked friends", Toast.LENGTH_SHORT).show()
 
-                R.id.nav_calendar-> startActivity(
+                R.id.nav_calendar -> startActivity(
                     Intent(
                         this,
                         CalendarActivity::class.java
                     )
                 )
+
+                R.id.nav_analysis -> startActivity(Intent(this, AnalysisActivity::class.java))
 
 
             }
@@ -103,7 +111,7 @@ class CalendarActivity : AppCompatActivity() {
 
 
 
-    } //onCreate end
+    }
     //parse from possibly single digit to double digit String
     private fun ddMonth(month : Int): String {
         if (month <10){
@@ -119,6 +127,7 @@ class CalendarActivity : AppCompatActivity() {
         else return ""+day
     }
 
+    //read todos with due date on selected day
     private fun readTodoDate(uid: String, y :String, m :String, d:String ) {
 
         databaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app").getReference("ToDo")
@@ -126,13 +135,16 @@ class CalendarActivity : AppCompatActivity() {
 
             override fun onDataChange(snapshot: DataSnapshot) {
 
+                //loop through all todos in database
                 for (todoSnapshot in snapshot.children) {
 
+                    //check if user owns item in db
                     if (todoSnapshot.key!!.contains(uid)) {                                  //only show user owned items
                         val todo = todoSnapshot.getValue(ToDo::class.java)
                         val cDate = todoSnapshot.child("createdDate").getValue().toString()
                         val dDate = todoSnapshot.child("dueDate").getValue().toString()
 
+                        //check if due date is equal to clicked date on calendar
                         if (dDate == y +"-"+ m +"-"+ d){
                             todoArrayList.add(todo!!)                                            //arrayList with all the user owned todos in Database
                             todoRecyclerView.adapter = ToDoAdapter(dDate, cDate, todoArrayList)
@@ -147,7 +159,6 @@ class CalendarActivity : AppCompatActivity() {
             override fun onCancelled(error: DatabaseError) {
             }
         })
-        println("read todo date ausgeführt")
 
     }
 

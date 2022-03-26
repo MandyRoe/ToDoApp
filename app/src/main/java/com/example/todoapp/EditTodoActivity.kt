@@ -17,6 +17,12 @@ import kotlinx.android.synthetic.main.item_todo.view.*
 import java.time.LocalDate
 import java.time.LocalDateTime
 
+/**
+ * Activity to edit todo item with fetched info from db of current todo item and update it to db
+ **/
+
+
+
 class EditTodoActivity : AppCompatActivity() {
 
     private lateinit var auth : FirebaseAuth
@@ -52,10 +58,12 @@ class EditTodoActivity : AppCompatActivity() {
 
     private fun readTodoData(){
 
+        //get info passed from ToDoAdpter
         val title = intent.getStringExtra("title").toString()
         val description = intent.getStringExtra("description").toString()
         val dueDate = intent.getStringExtra("dueDate").toString()
 
+        //fill layout fields with passed info
         val edTitle = findViewById<EditText>(R.id.etEditTodoTitle)
         edTitle.setText(title, TextView.BufferType.EDITABLE)
 
@@ -64,8 +72,6 @@ class EditTodoActivity : AppCompatActivity() {
 
         val edDueDate = findViewById<EditText>(R.id.etEditDueDate)
         edDueDate.setText(dueDate, TextView.BufferType.EDITABLE)
-
-
 
 
     }
@@ -77,6 +83,7 @@ class EditTodoActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         databaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app").getReference("ToDo")
 
+        //prepare values and link them to layout
         val uid = auth.currentUser?.uid
         val todoTitle = etEditTodoTitle.text.toString()
         val description = etEditDescription.text.toString()
@@ -86,15 +93,18 @@ class EditTodoActivity : AppCompatActivity() {
         databaseReference.addListenerForSingleValueEvent(object: ValueEventListener {
 
             override fun onDataChange(snapshot: DataSnapshot) {
+
+                //loop through todos
                 for (ds in snapshot.children) {
 
+                    //if user owns the item
                     if(ds.key == todoTitle + uid) {
-
-                        val d = ds.child("done").value
-                        val dd = ds.child("doneDate").value.toString()
-
+                        //fetch info of item
+                        val d = ds.child("done").value                    //done status
+                        val dd = ds.child("doneDate").value.toString()    // done date
+                        //create todo object with info
                         val todo = ToDo(todoTitle, description, uid, d as Boolean?,dd, dueDate, createdDate)
-
+                        //post todo object to db and effectively overwrite it
                         databaseReference.child(todoTitle + uid).setValue(todo)
 
 
@@ -103,7 +113,7 @@ class EditTodoActivity : AppCompatActivity() {
                 }
             }
             override fun onCancelled(error: DatabaseError) {
-                //not needed
+
             }
 
 

@@ -18,11 +18,16 @@ import kotlinx.android.synthetic.main.activity_main.drawerLayout
 import kotlinx.android.synthetic.main.activity_main.nav_view
 import kotlin.collections.ArrayList
 
+/**
+ * Activity to show user items that have friend status (friendslist)
+ **/
+
 
 class FriendActivity : AppCompatActivity() {
 
     private lateinit var auth : FirebaseAuth
     private lateinit var databaseReference: DatabaseReference
+    private lateinit var databaseReference2 : DatabaseReference
     private lateinit var friendRecyclerView: RecyclerView
     private lateinit var friendsArrayList: ArrayList<User>
 
@@ -41,25 +46,26 @@ class FriendActivity : AppCompatActivity() {
         friendsArrayList = arrayListOf<User>()
 
         val uid = auth.currentUser?.uid
-        // val title = intent.getStringExtra("title").toString()
 
 
         readFriends(uid!!)
 
-
+        //add friend button functionality
         val btnAddFriend= findViewById<Button>(R.id.btnAddFriend)
         btnAddFriend.setOnClickListener {
-            println("add Friend pressed successfully")
 
+            //go to AddFriendActivity that lets you add friends
             startActivity(Intent(this, AddFriendActivity::class.java))
 
 
         }
 
+        //friend requests button functionality
         val btnFriendRequests= findViewById<Button>(R.id.btnFriendRequests)
         btnFriendRequests.setOnClickListener {
             println("button pressed successfully")
 
+            //go to FriendRequestActivity to see your received friend requests
             startActivity(Intent(this, FriendRequestsActivity::class.java))
 
 
@@ -75,7 +81,7 @@ class FriendActivity : AppCompatActivity() {
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        //nav items functionality
+        //nav items functionality - if item is clicked start corresponding activity
         nav_view.bringToFront()
         nav_view.setNavigationItemSelectedListener {
             when (it.itemId) {
@@ -93,41 +99,51 @@ class FriendActivity : AppCompatActivity() {
                 R.id.nav_friends -> startActivity(Intent(this, FriendActivity::class.java))
 
 
+                R.id.nav_calendar -> startActivity(
+                    Intent(
+                        this,
+                        CalendarActivity::class.java
+                    )
+                )
+
+                R.id.nav_analysis -> startActivity(Intent(this, AnalysisActivity::class.java))
+
 
             }
             true
         }
 
-    } //onCreate end
+    }
 
-    //functions
 
 
     @RequiresApi(Build.VERSION_CODES.O)
 
-
+    //show your friends function
     private fun readFriends(uid: String) {
 
         databaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app").getReference("Friendships")
-        val dbr2 : DatabaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app").getReference("Users")
+        databaseReference2= FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app").getReference("Users")
+
         databaseReference.addListenerForSingleValueEvent(object: ValueEventListener {
 
             override fun onDataChange(snapshot: DataSnapshot) {
-
+                //loop through Friendship items in database
                 for (friendSnapshot in snapshot.children) {
+                    //look for my uid in friendships
+                    if(friendSnapshot.key?.contains(uid)!!) {
+                        //if uid1 = myself -> uid2 added to array
+                        if(friendSnapshot.child("uid1").toString() == uid){
 
-                    if(friendSnapshot.key?.contains(uid)!!) {                //look for my uid in friendships
-                        if(friendSnapshot.child("uid1").toString() == uid){            //    if uid1 = my dann uid2 ins array
-
-                            dbr2.addListenerForSingleValueEvent(object: ValueEventListener {
+                            databaseReference2.addListenerForSingleValueEvent(object: ValueEventListener {
 
                                 override fun onDataChange(snapshot: DataSnapshot)  {
-
-                                    for (userSnapshot in snapshot.children) {         //get user from uid2
+                                    //loop through users to get user from uid2
+                                    for (userSnapshot in snapshot.children) {
 
                                         if(friendSnapshot.child("uid2").getValue() == userSnapshot.key) {
                                             val user = userSnapshot.getValue(User::class.java)
-
+                                            //add user to array for adapter to display
                                             friendsArrayList.add(user!!)
                                             friendRecyclerView.adapter = FriendAdapter(friendsArrayList)
 
@@ -141,15 +157,17 @@ class FriendActivity : AppCompatActivity() {
 
                             })
 
-                        } else { dbr2.addListenerForSingleValueEvent(object: ValueEventListener {
+                        }
+                        //if uid2 = myself -> uid1 added to array
+                        else { databaseReference2.addListenerForSingleValueEvent(object: ValueEventListener {
 
                             override fun onDataChange(snapshot: DataSnapshot)  {
-
-                                for (userSnapshot in snapshot.children) {         //get user from uid2
-
+                                //loop through users in db
+                                for (userSnapshot in snapshot.children) {
+                                    //get user from uid1
                                     if(friendSnapshot.child("uid1").getValue() == userSnapshot.key) {
                                         val user = userSnapshot.getValue(User::class.java)
-
+                                        //add to array to display
                                         friendsArrayList.add(user!!)
                                         friendRecyclerView.adapter = FriendAdapter(friendsArrayList)
 

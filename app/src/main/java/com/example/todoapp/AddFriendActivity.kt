@@ -11,6 +11,10 @@ import com.google.firebase.database.*
 import com.example.todoapp.UserAdapter.*
 import kotlinx.android.synthetic.main.item_todo.*
 
+/**
+ * Activity to show users in db and request friendship
+ **/
+
 
 class AddFriendActivity : AppCompatActivity()  {
 
@@ -40,19 +44,23 @@ class AddFriendActivity : AppCompatActivity()  {
     }
 
 
-
+    //function for displaying all users but self
+    //todo: only show users that are not self and not already friends
     private fun readUsers(uid: String) {
 
         databaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app").getReference("Users")
-        val dbr2 : DatabaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app").getReference("Friendships")
+
         databaseReference.addListenerForSingleValueEvent(object: ValueEventListener {
 
             override fun onDataChange(snapshot: DataSnapshot) {
-
+                //go through all users in db
                 for (uS in snapshot.children) {
 
+                    //if user id is not equal to user.key from db (which is uid of the respective user)
                 if(uS.key != uid){
+                    //Create user object from database values
                     val user = uS.getValue(User::class.java)
+                    //add to User Array List and send to adapter
                     addFriendArrayList.add(user!!)
                     friendRecyclerView.adapter = AddFriendAdapter(addFriendArrayList)
                 }

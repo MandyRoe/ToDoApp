@@ -3,6 +3,12 @@ package com.example.todoapp
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 
+/**
+ * class for Friend Request object.
+ * unfortunately we weren't able to implement everything so nicely. dirty was faster. #clean code
+ **/
+
+
 data class FriendRequest(
     var from_uid : String ="",
     var to_uid : String ="",

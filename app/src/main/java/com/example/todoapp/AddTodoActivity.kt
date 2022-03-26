@@ -14,6 +14,11 @@ import kotlinx.android.synthetic.main.activity_addtodo.*
 import java.time.LocalDate
 import java.time.LocalDateTime
 
+/**
+ * Activity to enter Todo information in order to create a new todo
+ **/
+
+
 class AddTodoActivity : AppCompatActivity() {
 
     private lateinit var auth : FirebaseAuth
@@ -28,10 +33,15 @@ class AddTodoActivity : AppCompatActivity() {
 
 
         val btnCreateTodo = findViewById<Button>(R.id.btnCreateTodo)
+
+        //create todo button functionality
         btnCreateTodo.setOnClickListener {
 
             addTodoData()
+
+            //go to ToDoActivity
             startActivity(Intent(this,ToDoActivity::class.java))
+            //toast feedback to user
             Toast.makeText(this, "Activity added", Toast.LENGTH_SHORT).show()
 
 
@@ -46,13 +56,16 @@ class AddTodoActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         databaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app").getReference("ToDo")
 
+        //prepares info
         val uid = auth.currentUser?.uid
         val todoTitle = etTodoTitle.text.toString()
         val description = etDescription.text.toString()
         val dueDate = LocalDate.parse(etDueDate.text.toString()).toString()
         val createdDate = LocalDateTime.now().toString()
-        val todo = ToDo(todoTitle, description, uid, false,"null", dueDate, createdDate)
 
+        //creates todo object with info
+        val todo = ToDo(todoTitle, description, uid, false,"null", dueDate, createdDate)
+        //posts todo infos to database
         databaseReference.child(todoTitle + uid).setValue(todo)
 
 

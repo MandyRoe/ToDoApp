@@ -10,6 +10,11 @@ import kotlinx.android.synthetic.main.activity_main.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 
+/**
+ * Activity for the starting screen with mainly buttons to start other activities
+ **/
+
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -59,7 +64,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    //checks regflag to force profile creation after registration
+    //checks regflag status in database to soft force profile creation into database after registration
     private fun checkReg() {
         auth = FirebaseAuth.getInstance()
         var uid = auth.currentUser?.uid

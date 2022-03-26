@@ -64,7 +64,7 @@ class ToDoActivity : AppCompatActivity() {
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        //nav items functionality
+        //nav items functionality - if item is clicked start corresponding activity
         nav_view.bringToFront()
         nav_view.setNavigationItemSelectedListener {
             when (it.itemId) {
@@ -98,26 +98,25 @@ class ToDoActivity : AppCompatActivity() {
 
     } //onCreate end
 
-     //functions
 
-
+    //functions to fetch user owned todo items
     @RequiresApi(Build.VERSION_CODES.O)
-
-
     private fun readTodoData(uid: String) {
 
         databaseReference = FirebaseDatabase.getInstance("https://todoapp-ca2d3-default-rtdb.europe-west1.firebasedatabase.app").getReference("ToDo")
-        databaseReference.addListenerForSingleValueEvent(object: ValueEventListener {   //addValueEventListener loops infinite
+        databaseReference.addListenerForSingleValueEvent(object: ValueEventListener {
 
             override fun onDataChange(snapshot: DataSnapshot) {
-
+                    //loop through all todos in database
                     for (todoSnapshot in snapshot.children) {
-
-                        if (todoSnapshot.key!!.contains(uid)) {                       //only show user owned items
+                        //select self owned items
+                        if (todoSnapshot.key!!.contains(uid)) {
                             val todo = todoSnapshot.getValue(ToDo::class.java)
                             val cDate = todoSnapshot.child("createdDate").getValue().toString()
                             val dDate = todoSnapshot.child("dueDate").getValue().toString()
-                            todoArrayList.add(todo!!)                              //arrayList with all the user owned todos in Database
+                            //add item to arraylist
+                            todoArrayList.add(todo!!)
+                            //pass arraylist with additional info to adapter
                             todoRecyclerView.adapter = ToDoAdapter(dDate, cDate, todoArrayList)
 
                         }
@@ -128,7 +127,6 @@ class ToDoActivity : AppCompatActivity() {
             override fun onCancelled(error: DatabaseError) {
             }
         })
-        println("read todo ausgeführt")
 
     }
 

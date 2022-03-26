@@ -13,6 +13,11 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.android.synthetic.main.activity_login.*
 
+
+/**
+ * Activity to handle user login with Firebase
+ **/
+
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
@@ -20,19 +25,24 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        // Initialize Firebase Auth
+
+        //Initialize Firebase auth
         auth = FirebaseAuth.getInstance()
 
-        btn_signup.setOnClickListener{
+
+        //Signup button functionality to start RegisterActivity to enable user registration
+        btn_signup.setOnClickListener {
             startActivity(Intent(this, RegisterActivity::class.java))
             finish()
         }
 
-        btn_LoginButton.setOnClickListener{
+        //Login button functionality to start log in
+        btn_LoginButton.setOnClickListener {
             doLogin()
 
         }
 
+        //Forgot password button functionality to reset password
         btn_forgot_pw.setOnClickListener {
             val builder = AlertDialog.Builder(this)
             builder.setTitle("Forgot Password")
@@ -42,13 +52,14 @@ class LoginActivity : AppCompatActivity() {
             builder.setView(view)
 
             builder.setPositiveButton("Reset", DialogInterface.OnClickListener { _, _ ->
-            forgotPassword(username)
-        })
-            builder.setNegativeButton("Close", DialogInterface.OnClickListener{_, _ -> })
+                forgotPassword(username)
+            })
+            builder.setNegativeButton("Close", DialogInterface.OnClickListener { _, _ -> })
             builder.show()
         }
     }
 
+    //method to reset password
     private fun forgotPassword(username: EditText) {
         if (username.text.toString().isEmpty()) {
             return
@@ -65,7 +76,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
 
-
+    //function to log in through Firebase auth
     private fun doLogin() {
         if (tv_email.text.toString().isEmpty()) {
             tv_email.error = "Enter your Email"
@@ -93,8 +104,10 @@ class LoginActivity : AppCompatActivity() {
                     updateUI(user)
                 } else {
                     // If sign in fails, display a message to the user.
-                    Toast.makeText(baseContext, "Login failed.",
-                        Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        baseContext, "Login failed.",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     updateUI(null)
                 }
             }
@@ -109,21 +122,23 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun updateUI(currentUser: FirebaseUser?) {
-    // if the currentUser is not null - open the Dashboard/MainActivity
-        if(currentUser != null) {
+        // if the currentUser is not null - open the Dashboard/MainActivity
+        if (currentUser != null) {
             // check if the user has verified his email address
-            if(currentUser.isEmailVerified){
+            if (currentUser.isEmailVerified) {
                 startActivity(Intent(this, MainActivity::class.java))
-            finish()
-            }else{
+                finish()
+            } else {
+                Toast.makeText(
+                    baseContext, "Please verify your E-Mail Address.",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        } else {
             Toast.makeText(
-                baseContext, "Please verify your E-Mail Address.",
+                baseContext, "Login failed.",
                 Toast.LENGTH_SHORT
             ).show()
-            }
-        }else{
-            Toast.makeText(baseContext, "Login failed.",
-                Toast.LENGTH_SHORT).show()
         }
     }
 
